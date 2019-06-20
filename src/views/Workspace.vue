@@ -1,46 +1,23 @@
 <template>
   <div class="flex flex-row bg-indigo-200 h-screen">
-    <Nav :handle="handle" />
-    <section class="flex-grow m-10 flex flex-col items-center">
-      <h1 class="mt-5 mb-8 text-2xl font-medium text-center">
-        Everything is up to date.
-      </h1>
-      <template v-if="!isLoading">
-        <div class="rounded overflow-hidden shadow-md lg:w-1/2 w-4/5">
-          <StashItem
-            v-for="stash in stashes"
-            :key="stash.id"
-            :stash="stash"
-          ></StashItem>
-        </div>
-      </template>
-      <p v-else>Loading stashes</p>
-      <button
-        class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64 mt-8"
-      >
-        Add a new agent
-      </button>
-    </section>
+    <Nav :handle="handle"/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Nav from '@/components/Nav'
-import StashItem from '@/components/StashItem'
+import NotFound from '@/views/errors/NotFound'
 
 export default {
-  components: { StashItem, Nav },
+  components: { Nav },
   props: ['handle'],
-  computed: {
-    ...mapState({
-      stashes(state) {
-        return state.stash.stashes.filter(
-          stash => stash.workspace === this.handle
-        )
-      },
-      isLoading: state => state.stash.isLoading
-    })
+  created() {
+    if (!this.$store.getters.getWorkspaceByHandle(this.handle)) {
+      this.$store
+        .dispatch('fetchWorkspace', this.handle)
+        .catch(() => this.$_error(NotFound))
+    }
   }
 }
 </script>

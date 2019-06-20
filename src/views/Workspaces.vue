@@ -1,9 +1,9 @@
 <template>
-  <div class="sign bg-indigo-200 h-screen">
-    <div class="mx-auto h-full flex flex-col justify-center items-center">
+  <div class="m-auto p-8 h-full">
+    <div class="flex flex-col items-center">
       <h1 class="text-3xl font-bold mb-8">Workspaces</h1>
       <template v-if="!workspace.isLoading">
-        <div class="rounded overflow-hidden shadow-md border-black-700">
+        <div class="rounded shadow-md">
           <WorkspaceItem
             v-for="workspace in workspace.workspaces"
             :key="workspace.id"
@@ -22,11 +22,18 @@
 </template>
 
 <script>
+import FlexCenter from '@/mixins/FlexCenter.js'
 import WorkspaceItem from '@/components/WorkspaceItem'
 import { mapState } from 'vuex'
 
 export default {
   components: { WorkspaceItem },
+  mixins: [FlexCenter],
+  mounted() {
+    if (!this.$store.state.workspace.alreadyFetched) {
+      this.$store.dispatch('fetchWorkspaces')
+    }
+  },
   computed: mapState(['workspace'])
 }
 </script>

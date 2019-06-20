@@ -27,6 +27,9 @@ export default {
       return BackupService.getBackupsByPath(path.workspace, path.stash).then(
         response => {
           commit('SET_BACKUPS', response.data)
+          if (!response.data.backups.length) {
+            throw { code: 404 }
+          }
         }
       )
     }

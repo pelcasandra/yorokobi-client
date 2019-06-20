@@ -1,6 +1,6 @@
 <template>
-  <div class="sign bg-indigo-200 h-screen">
-    <div class="mx-auto h-full flex flex-col justify-center items-center">
+  <div class="m-auto p-8 h-full">
+    <div class="flex flex-col justify-center items-center">
       <svg class="fill-current text-indigo-600 inline-block h-12 w-12 mb-6">
         <use xlink:href="@/assets/images/icon-sprite.svg#brand"></use>
       </svg>
@@ -16,7 +16,10 @@
 </template>
 
 <script>
+import FlexCenter from '@/mixins/FlexCenter.js'
+
 export default {
-  name: 'SignForm'
+  name: 'SignForm',
+  mixins: [FlexCenter]
 }
 </script>

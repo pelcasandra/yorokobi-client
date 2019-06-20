@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store/store.js'
-import Backup from '@/views/Backup.vue'
+import Backup from '@/views/workspace/Backup.vue'
 import Join from '@/views/Join.vue'
-import Settings from '@/views/Settings.vue'
+import NotFound from '@/views/errors/NotFound.vue'
+import Settings from '@/views/workspace/Settings.vue'
 import Sign from '@/views/Sign.vue'
+import Stash from '@/views/workspace/Stash.vue'
+import Stashes from '@/views/workspace/Stashes.vue'
 import Workspace from '@/views/Workspace.vue'
 import Workspaces from '@/views/Workspaces.vue'
 
@@ -14,78 +17,6 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    {
-      path: '/workspaces',
-      name: 'workspaces',
-      component: Workspaces,
-      meta: { requiresAuth: true },
-      beforeEnter: (to, from, next) => {
-        if (!store.state.workspace.alreadyFetched) {
-          store.dispatch('fetchWorkspaces')
-        }
-        next()
-      }
-    },
-    {
-      path: '/:handle',
-      name: 'workspace',
-      component: Workspace,
-      props: true,
-      meta: { requiresAuth: true },
-      beforeEnter: (to, from, next) => {
-        if (
-          !store.getters.getStashesByWorkspaceHandle(to.params.handle).length
-        ) {
-          store.dispatch('fetchStashesByWorkspaceHandle', to.params.handle)
-        }
-        next()
-      }
-    },
-    {
-      path: '/:handle/backups/:id',
-      name: 'backup',
-      component: Backup,
-      props: true,
-      meta: { requiresAuth: true },
-      beforeEnter: (to, from, next) => {
-        store.dispatch('fetchBackup', to.params.id).then(() => {
-          store.dispatch(
-            'fetchAgent',
-            store.getters.getBackupById(to.params.id).agent
-          )
-        })
-        next()
-      }
-    },
-    {
-      path: '/:handle/:id',
-      name: 'stash',
-      props: true,
-      meta: { requiresAuth: true },
-      beforeEnter: (to, from, next) => {
-        let path = {
-          workspace: to.params.handle,
-          stash: to.params.id
-        }
-        store.dispatch('fetchBackupsByPath', path).then(() => {
-          router.push({
-            name: 'backup',
-            params: {
-              handle: to.params.handle,
-              id: store.getters.getBackupsByPath(path)[0].id
-            }
-          })
-          next()
-        })
-      }
-    },
-    {
-      path: '/:handle/settings',
-      name: 'settings',
-      component: Settings,
-      props: true,
-      meta: { requiresAuth: true }
-    },
     {
       path: '/join',
       name: 'join',
@@ -98,6 +29,49 @@ const router = new Router({
       component: Sign,
       alias: '/login',
       meta: { publicOnly: true }
+    },
+    {
+      path: '/workspaces',
+      name: 'workspaces',
+      component: Workspaces,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/:handle',
+      component: Workspace,
+      props: true,
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'backups/:id',
+          name: 'backup',
+          component: Backup,
+          props: true
+        },
+        {
+          path: 'settings',
+          name: 'settings',
+          component: Settings,
+          props: true
+        },
+        {
+          path: ':id',
+          name: 'stash',
+          component: Stash,
+          props: true
+        },
+        {
+          path: '',
+          component: Stashes,
+          name: 'workspace',
+          props: true
+        }
+      ]
+    },
+    {
+      path: '*',
+      name: 'notFound',
+      component: NotFound
     }
   ]
 })
@@ -107,16 +81,6 @@ router.beforeEach((to, from, next) => {
 
   if (loggedIn) {
     Vue.axios.defaults.headers.common['Authorization'] = store.state.user.token
-
-    // Fetches the current workspace into the state when not present.
-    if (
-      to.params.handle &&
-      !store.getters.getWorkspaceByHandle(to.params.handle)
-    ) {
-      store.dispatch('fetchWorkspace', to.params.handle).then(() => {
-        next()
-      })
-    }
 
     // Redirects public only routes back to dashboard
     if (to.matched.some(record => record.meta.publicOnly)) {

@@ -1,6 +1,5 @@
 <template>
-  <div class="flex flex-row bg-indigo-200 h-screen">
-    <Nav :handle="handle" />
+  <div class="flex w-full">
     <NavSettings />
     <section class="flex-grow flex flex-col items-center">
       <h1 class="mt-5 mb-8 text-2xl font-medium text-center">

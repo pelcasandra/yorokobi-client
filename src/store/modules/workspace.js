@@ -21,8 +21,11 @@ export default {
 
   actions: {
     fetchWorkspace({ commit }, workspace_handle) {
-      WorkspaceService.getWorkspace(workspace_handle).then(response => {
+      return WorkspaceService.getWorkspace(workspace_handle).then(response => {
         commit('SET_WORKSPACE', response.data)
+        if (!response.data.workspaces.length) {
+          throw { code: 404 }
+        }
       })
     },
     fetchWorkspaces({ commit }) {

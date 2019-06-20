@@ -1,11 +1,16 @@
 import router from '@/router'
 import Vue from 'vue'
+import ErrorPage from 'vue-error-page'
 import App from '@/App.vue'
 import store from '@/store/store'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import VueTimeago from 'vue-timeago'
 import '@/assets/css/tailwind.css'
+
+window.eventBus = new Vue()
+
+Vue.use(ErrorPage)
 
 Vue.use(VueTimeago, {
   name: 'Timeago',

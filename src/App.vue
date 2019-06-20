@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="antialiased">
+  <app-view id="app" class="antialiased">
     <router-view />
-  </div>
+  </app-view>
 </template>
 
 <script></script>
