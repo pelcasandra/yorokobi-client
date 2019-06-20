@@ -12,11 +12,11 @@
         </div>
       </template>
       <p v-else>Loading workspaces</p>
-      <button
-        class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64 mt-8"
+      <router-link
+        :to="{ name: 'new_workspace' }"
+        class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64 mt-8 text-center"
+        >New Workspace</router-link
       >
-        New Workspace
-      </button>
     </div>
   </div>
 </template>

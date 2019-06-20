@@ -9,7 +9,7 @@ export default {
 
   mutations: {
     SET_WORKSPACE(state, workspace) {
-      state.workspaces.push(workspace.workspaces[0])
+      state.workspaces.push(workspace)
       state.isLoading = false
     },
     SET_WORKSPACES(state, workspaces) {
@@ -20,9 +20,14 @@ export default {
   },
 
   actions: {
+    createWorkspace({ commit }, workspace) {
+      return WorkspaceService.postWorkspace(workspace).then(response => {
+        commit('SET_WORKSPACE', response.data)
+      })
+    },
     fetchWorkspace({ commit }, workspace_handle) {
       return WorkspaceService.getWorkspace(workspace_handle).then(response => {
-        commit('SET_WORKSPACE', response.data)
+        commit('SET_WORKSPACE', response.workspaces[0])
         if (!response.data.workspaces.length) {
           throw { code: 404 }
         }

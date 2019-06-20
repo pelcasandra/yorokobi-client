@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import store from '@/store/store.js'
 import Backup from '@/views/workspace/Backup.vue'
 import Join from '@/views/Join.vue'
+import NewWorkspace from '@/views/NewWorkspace.vue'
 import NotFound from '@/views/errors/NotFound.vue'
 import Settings from '@/views/workspace/Settings.vue'
 import Sign from '@/views/Sign.vue'
@@ -34,6 +35,12 @@ const router = new Router({
       path: '/workspaces',
       name: 'workspaces',
       component: Workspaces,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/workspaces/new',
+      name: 'new_workspace',
+      component: NewWorkspace,
       meta: { requiresAuth: true }
     },
     {
