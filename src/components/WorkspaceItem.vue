@@ -1,12 +1,9 @@
 <template>
   <router-link
+    class="bg-white first-child:rounded-t last-child:rounded-b last-child:border-b-0 workspace-item w-64 p-5 border-b-2 font-medium hover:bg-indigo-100 focus:bg-indigo-200 block"
     :to="{ name: 'workspace', params: { handle: workspace.handle } }"
   >
-    <div
-      class="workspace-item bg-white w-64 p-5 border-b-2 border-black-700 font-medium hover:bg-indigo-100 focus:bg-indigo-200"
-    >
-      <h4>{{ workspace.name }}</h4>
-    </div>
+    <h4>{{ workspace.name }}</h4>
   </router-link>
 </template>
 
@@ -14,6 +11,12 @@
 export default {
   name: 'WorkspaceItem',
   props: {
+    count: {
+      type: Number
+    },
+    index_count: {
+      type: Number
+    },
     workspace: {
       type: Object,
       default: () => {

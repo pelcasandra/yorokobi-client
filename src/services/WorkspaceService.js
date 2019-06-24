@@ -3,7 +3,7 @@ import Vue from 'vue'
 export default {
   postWorkspace(workspace) {
     return Vue.axios.post('/workspaces', {
-      name: workspace.handle,
+      name: workspace.name,
       handle: workspace.handle
     })
   },

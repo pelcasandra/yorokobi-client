@@ -1,7 +1,7 @@
 <template>
   <div class="m-auto p-8 h-full">
     <div class="flex flex-col items-center">
-      <h1 class="text-3xl font-bold mb-8">Workspaces</h1>
+      <h1 class="text-3xl font-bold mb-8 text-gray-900">Workspaces</h1>
       <template v-if="!workspace.isLoading">
         <div class="rounded shadow-md">
           <WorkspaceItem

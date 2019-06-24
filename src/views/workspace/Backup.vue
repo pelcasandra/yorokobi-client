@@ -67,12 +67,11 @@
 <script>
 import { mapState } from 'vuex'
 import Header from '@/components/Header'
-import Nav from '@/components/Nav'
 import NotFound from '@/views/errors/NotFound'
 import Timeago from '@/components/Timeago'
 
 export default {
-  components: { Header, Nav, Timeago },
+  components: { Header, Timeago },
   props: ['datetime', 'handle', 'id'],
   created() {
     this.$store

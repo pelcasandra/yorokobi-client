@@ -27,7 +27,7 @@ export default {
     },
     fetchWorkspace({ commit }, workspace_handle) {
       return WorkspaceService.getWorkspace(workspace_handle).then(response => {
-        commit('SET_WORKSPACE', response.workspaces[0])
+        commit('SET_WORKSPACE', response.data.workspaces[0])
         if (!response.data.workspaces.length) {
           throw { code: 404 }
         }

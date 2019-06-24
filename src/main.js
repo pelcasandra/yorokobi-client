@@ -6,6 +6,8 @@ import store from '@/store/store'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import VueTimeago from 'vue-timeago'
+import Vuelidate from 'vuelidate'
+import VueLodash from 'vue-lodash'
 import '@/assets/css/tailwind.css'
 
 window.eventBus = new Vue()
@@ -16,6 +18,9 @@ Vue.use(VueTimeago, {
   name: 'Timeago',
   locale: 'en'
 })
+
+Vue.use(Vuelidate)
+Vue.use(VueLodash)
 
 const requireComponent = require.context(
   // The relative path of the components folder
@@ -68,7 +73,9 @@ new Vue({
     Vue.axios.interceptors.response.use(
       response => response,
       error => {
-        console.log(error.response)
+        // if (error.response.status == 422) {
+        //   console.log(error.response)
+        // }
         if (error.response.status === 401) {
           this.$router.push('/')
           this.$store.dispatch('logout')
