@@ -8,6 +8,7 @@ import camelCase from 'lodash/camelCase'
 import VueTimeago from 'vue-timeago'
 import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
+import { templates } from 'vuelidate-error-extractor'
 import '@/assets/css/tailwind.css'
 
 window.eventBus = new Vue()
@@ -21,6 +22,8 @@ Vue.use(VueTimeago, {
 
 Vue.use(Vuelidate)
 Vue.use(VueLodash)
+
+Vue.component('FormWrapper', templates.FormWrapper)
 
 const requireComponent = require.context(
   // The relative path of the components folder

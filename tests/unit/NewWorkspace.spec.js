@@ -71,11 +71,13 @@ describe('NewWorkspace.vue', () => {
       }
     ]
 
-    wrapper.setData({ requestErrors })
     wrapper.setData({ name: 'My Workspace' })
     wrapper.setData({ handle: 'my-workspace' })
+    wrapper.setData({ requestErrors })
     wrapper.find('form').trigger('submit')
 
     expect(wrapper.vm.$v.handle.taken).toBe(false)
+    wrapper.setData({ handle: 'new-workspace-handle' })
+    expect(wrapper.vm.$v.handle.taken).toBe(true)
   })
 })

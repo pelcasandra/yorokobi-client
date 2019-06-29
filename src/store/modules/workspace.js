@@ -20,9 +20,9 @@ export default {
   },
 
   actions: {
-    createWorkspace({ commit }, workspace) {
-      return WorkspaceService.postWorkspace(workspace).then(response => {
-        commit('SET_WORKSPACE', response.data)
+    fetchWorkspaces({ commit }) {
+      WorkspaceService.getWorkspaces().then(({ data }) => {
+        commit('SET_WORKSPACES', data)
       })
     },
     fetchWorkspace({ commit }, workspace_handle) {
@@ -33,9 +33,14 @@ export default {
         }
       })
     },
-    fetchWorkspaces({ commit }) {
-      WorkspaceService.getWorkspaces().then(({ data }) => {
-        commit('SET_WORKSPACES', data)
+    createWorkspace({ commit }, workspace) {
+      return WorkspaceService.postWorkspace(workspace).then(response => {
+        commit('SET_WORKSPACE', response.data)
+      })
+    },
+    updateWorkspace({ commit }, workspace) {
+      return WorkspaceService.putWorkspace(workspace).then(response => {
+        commit('UPDATE_WORKSPACE', response.data)
       })
     }
   },
