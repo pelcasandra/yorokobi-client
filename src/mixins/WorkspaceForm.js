@@ -30,7 +30,6 @@ export default {
         this.automaticHandle = false
       }
     },
-
     getParameterizedHandle() {
       let parameterized_name = this.workspace.name
         .toLowerCase()

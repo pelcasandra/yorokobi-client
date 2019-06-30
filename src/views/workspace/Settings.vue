@@ -33,8 +33,8 @@
               type="input"
               name="handle"
               placeholder="workspace"
+              class="bg-gray-200 appearance-none border-2 border-gray-200 rounded rounded-l-none w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white"
               @blur="$v.workspace.handle.$touch()"
-              class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white inputClass"
               :class="
                 $v.workspace.handle.$error
                   ? 'focus:bg-red-100 bg-red-100 border-red-600'
@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import NavSettings from '@/components/NavSettings'
 import Workspace from '@/mixins/Workspace.js'
 import WorkspaceForm from '@/mixins/WorkspaceForm.js'
@@ -88,17 +89,16 @@ export default {
   components: { NavSettings },
   props: ['handle'],
   mixins: [Workspace, WorkspaceForm],
-  beforeMount() {
-    let unwatch = this.$watch('currentWorkspace', workspace => {
-      if (workspace) {
-        this.workspace.id = workspace.id
-        this.workspace.handle = workspace.handle
-        this.workspace.name = workspace.name
-        unwatch()
-      }
-    })
+  watch: {
+    currentWorkspace: {
+      immediate: true,
+      handler: 'cloneWorkspace'
+    }
   },
   methods: {
+    cloneWorkspace() {
+      this.workspace = this._.clone(this.currentWorkspace)
+    },
     updateWorkspace() {
       this.$v.workspace.$touch()
       if (!this.$v.workspace.$invalid) {
