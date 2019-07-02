@@ -1,19 +1,23 @@
 import WorkspaceService from '@/services/WorkspaceService'
+import { normalize, schema } from 'normalizr'
+import Vue from 'vue'
+
+const workspace = new schema.Entity('workspaces')
 
 export default {
   state: {
     alreadyFetched: false,
     isLoading: true,
-    workspaces: []
+    workspaces: {}
   },
 
   mutations: {
     SET_WORKSPACE(state, workspace) {
-      state.workspaces.push(workspace)
+      state.workspaces[workspace.id] = workspace
       state.isLoading = false
     },
-    SET_WORKSPACES(state, workspaces) {
-      state.workspaces = workspaces.workspaces
+    SET_WORKSPACES(state, data) {
+      state.workspaces = data.entities.workspaces
       state.alreadyFetched = true
       state.isLoading = false
     }
@@ -22,12 +26,16 @@ export default {
   actions: {
     fetchWorkspaces({ commit }) {
       WorkspaceService.getWorkspaces().then(({ data }) => {
-        commit('SET_WORKSPACES', data)
+        const workspaces = normalize(data, { workspaces: [workspace] })
+        commit('SET_WORKSPACES', workspaces)
       })
     },
-    fetchWorkspace({ commit }, workspace_handle) {
+    fetchWorkspace({ commit, state }, workspace_handle) {
       return WorkspaceService.getWorkspace(workspace_handle).then(response => {
-        commit('SET_WORKSPACE', response.data.workspaces[0])
+        const workspace = response.data.workspaces[0]
+        if (workspace && !state.workspaces[workspace.id]) {
+          commit('SET_WORKSPACE', workspace)
+        }
         if (!response.data.workspaces.length) {
           throw { code: 404 }
         }
@@ -40,17 +48,17 @@ export default {
     },
     updateWorkspace({ commit }, workspace) {
       return WorkspaceService.putWorkspace(workspace).then(response => {
-        commit('UPDATE_WORKSPACE', response.data)
+        commit('SET_WORKSPACE', response.data)
       })
     }
   },
 
   getters: {
-    getWorkspaceByHandle: state => handle => {
-      return state.workspaces.find(workspace => workspace.handle === handle)
+    getWorkspace: state => id => {
+      return state.workspaces[id]
     },
-    getWorkspaceById: state => id => {
-      return state.workspaces.find(workspace => workspace.id === id)
+    getWorkspaceByHandle: state => handle => {
+      return Vue._.find(state.workspaces, { handle: handle })
     }
   }
 }
