@@ -5,7 +5,6 @@ import VueLodash from 'vue-lodash'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import NewWorkspace from '@/views/NewWorkspace'
-import BaseInput from '@/components/BaseInput.vue'
 
 Vue.use(Vuex)
 Vue.use(VueRouter)
@@ -32,7 +31,7 @@ describe('NewWorkspace.vue', () => {
     wrapper = shallowMount(NewWorkspace, {
       store,
       stubs: {
-        BaseInput: BaseInput
+        BaseInput: '<div />'
       }
     })
   })

@@ -13,7 +13,7 @@ export default {
     }
   },
   watch: {
-    handle: function() {
+    'workspace.handle': function() {
       this.removeRequestErrors('handle')
     }
   },
