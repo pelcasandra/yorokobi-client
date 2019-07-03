@@ -14,7 +14,6 @@ export default {
     })
   },
   putWorkspace(workspace) {
-    console.log(workspace)
     return Vue.axios.put('/workspaces/' + workspace.id, {
       name: workspace.name,
       handle: workspace.handle

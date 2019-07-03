@@ -1,6 +1,7 @@
+import Vue from 'vue'
 import WorkspaceService from '@/services/WorkspaceService'
 import { normalize, schema } from 'normalizr'
-import Vue from 'vue'
+import find from 'lodash/find'
 
 const workspace = new schema.Entity('workspaces')
 
@@ -13,7 +14,7 @@ export default {
 
   mutations: {
     SET_WORKSPACE(state, workspace) {
-      state.workspaces[workspace.id] = workspace
+      Vue.set(state.workspaces, workspace.id, workspace)
       state.isLoading = false
     },
     SET_WORKSPACES(state, data) {
@@ -58,7 +59,7 @@ export default {
       return state.workspaces[id]
     },
     getWorkspaceByHandle: state => handle => {
-      return Vue._.find(state.workspaces, { handle: handle })
+      return find(state.workspaces, { handle: handle })
     }
   }
 }

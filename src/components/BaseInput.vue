@@ -1,38 +1,27 @@
 <template>
-  <div>
-    <label
-      v-if="label"
-      for="name"
-      class="block text-gray-700 text-sm mb-2 font-bold"
-      >{{ label }}</label
-    >
-    <input
-      :type="type"
-      :name="name"
-      :placeholder="placeholder"
-      :value="value"
-      @input="updateValue"
-      v-on="listeners"
-      v-bind="$attrs"
-      class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white inputClass"
-      :class="
-        validation.$error
-          ? 'focus:bg-red-100 bg-red-100 border-red-600'
-          : 'focus:border-indigo-500'
-      "
-    />
-  </div>
+  <input
+    :type="type"
+    :name="name"
+    :placeholder="placeholder"
+    :value="value"
+    @input="updateValue"
+    v-on="listeners"
+    class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white"
+    :class="
+      validation.$error
+        ? 'focus:bg-red-100 bg-red-100 border-red-600'
+        : 'focus:border-indigo-500'
+    "
+  />
 </template>
 
 <script>
 export default {
   name: 'BaseInput',
-  inheritAttrs: false,
   props: {
-    label: String,
     name: String,
     placeholder: [String, Number],
-    type: String,
+    type: { type: String, default: 'text' },
     validation: Object,
     value: [String, Number]
   },

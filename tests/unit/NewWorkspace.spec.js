@@ -51,8 +51,8 @@ describe('NewWorkspace.vue', () => {
   it('validates empty fields', () => {
     wrapper.find('form').trigger('submit')
     expect(wrapper.vm.$v.$anyError).toBe(true)
-    expect(wrapper.vm.$v.workspace.name.required).toBe(false)
-    expect(wrapper.vm.$v.workspace.handle.required).toBe(false)
+    expect(wrapper.vm.$v.workspace.name.required_name).toBe(false)
+    expect(wrapper.vm.$v.workspace.handle.required_handle).toBe(false)
   })
 
   it('dispatches createWorksapce action', () => {

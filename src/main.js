@@ -8,7 +8,8 @@ import camelCase from 'lodash/camelCase'
 import VueTimeago from 'vue-timeago'
 import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
-import { templates } from 'vuelidate-error-extractor'
+import FormGroup from '@/components/FormGroup'
+import vuelidateErrorExtractor, { templates } from 'vuelidate-error-extractor'
 import '@/assets/css/tailwind.css'
 
 window.eventBus = new Vue()
@@ -22,6 +23,10 @@ Vue.use(VueTimeago, {
 
 Vue.use(Vuelidate)
 Vue.use(VueLodash)
+
+Vue.use(vuelidateErrorExtractor, {
+  template: FormGroup
+})
 
 Vue.component('FormWrapper', templates.FormWrapper)
 
@@ -76,9 +81,6 @@ new Vue({
     Vue.axios.interceptors.response.use(
       response => response,
       error => {
-        // if (error.response.status == 422) {
-        //   console.log(error.response)
-        // }
         if (error.response.status === 401) {
           this.$router.push('/')
           this.$store.dispatch('logout')
