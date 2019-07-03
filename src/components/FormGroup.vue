@@ -1,13 +1,12 @@
 <template>
   <div class="p-6 border-b-2 block">
     <slot name="label">
-      <label v-if="label" class="block text-gray-700 text-sm mb-2 font-bold">
-        {{ label }}
-      </label>
+      <label v-if="label" class="block text-gray-700 text-sm mb-2 font-bold">{{
+        label
+      }}</label>
     </slot>
     <slot />
     <div class="text-sm mt-2 font-medium text-red-600" v-if="hasErrors">
-      <!-- <div v-for="error in activeErrorMessages" :key="error">{{ error }}</div> -->
       <p>{{ firstErrorMessage }}</p>
     </div>
     <slot name="hint" v-if="hint">

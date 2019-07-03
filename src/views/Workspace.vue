@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-row bg-indigo-200 h-screen">
-    <Nav :handle="handle"/>
-    <router-view/>
+    <Nav :handle="handle" />
+    <router-view />
   </div>
 </template>
 
