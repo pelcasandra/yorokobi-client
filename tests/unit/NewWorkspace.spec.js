@@ -15,20 +15,13 @@ Vue.component('FormWrapper', templates.FormWrapper)
 
 describe('NewWorkspace.vue', () => {
   let wrapper
-  let store
   let actions
-  let state
+  let store
 
   beforeEach(() => {
-    state = { data: {} }
-    actions = {
-      createWorkspace: jest.fn()
-    }
+    actions = { createWorkspace: jest.fn() }
 
-    store = new Vuex.Store({
-      state,
-      actions
-    })
+    store = new Vuex.Store({ actions })
 
     wrapper = shallowMount(NewWorkspace, {
       store,
@@ -60,6 +53,7 @@ describe('NewWorkspace.vue', () => {
   })
 
   it('dispatches createWorksapce action', () => {
+    actions.createWorkspace.mockReturnValue(Promise.resolve(true))
     wrapper.setData({ workspace: { name: 'My Workspace' } })
     wrapper.setData({ workspace: { handle: 'my-workspace' } })
     wrapper.find('form').trigger('submit')

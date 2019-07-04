@@ -4,39 +4,44 @@ import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
 import Settings from '@/views/workspace/Settings'
-import workspace from '@/store/modules/workspace.js'
-import FormGroup from '@/components/FormGroup'
-import vuelidateErrorExtractor, { templates } from 'vuelidate-error-extractor'
+import { templates } from 'vuelidate-error-extractor'
 
 Vue.use(Vuex)
-Vue.use(VueAxios, axios)
 Vue.use(VueRouter)
 Vue.use(Vuelidate)
 Vue.use(VueLodash)
-Vue.use(vuelidateErrorExtractor, {
-  template: FormGroup
-})
 Vue.component('FormWrapper', templates.FormWrapper)
 
 describe('Settings.vue', () => {
+  const workspace = { id: '1', name: 'workspace', handle: 'workspace' }
   let wrapper
-  let store
-  let actions
   let state
+  let actions
+  let getters
+  let store
 
   beforeEach(() => {
-    state = {}
+    state = {
+      workspace: {
+        alreadyFetched: true,
+        workspaces: {
+          '1': workspace
+        }
+      }
+    }
 
-    actions = {
-      updateWorkspace: jest.fn()
+    actions = { updateWorkspace: jest.fn() }
+
+    getters = {
+      getWorkspaceByHandle: () => () => {
+        return workspace
+      }
     }
 
     store = new Vuex.Store({
-      modules: { workspace },
       state,
+      getters,
       actions
     })
 
@@ -47,22 +52,15 @@ describe('Settings.vue', () => {
       },
       data: function() {
         return {
-          workspace: {
-            id: '1',
-            name: 'workspace',
-            handle: 'workspace'
-          }
+          workspace: workspace
         }
       },
       stubs: {
+        FormGroup: '<div />',
         BaseInput: '<div />',
         BaseInputGroup: '<div />'
       }
     })
-
-    wrapper.vm.$store.state.workspace.workspaces = {
-      '1': { id: '1', name: 'workspace', handle: 'workspace' }
-    }
   })
 
   it('does not set automatic handle from any given name', () => {
@@ -71,15 +69,15 @@ describe('Settings.vue', () => {
   })
 
   it('validates empty fields', () => {
-    wrapper.find('form').trigger('submit')
     wrapper.setData({ workspace: { name: '' } })
     wrapper.setData({ workspace: { handle: '' } })
+    wrapper.find('form').trigger('submit')
     expect(wrapper.vm.$v.$anyError).toBe(true)
     expect(wrapper.vm.$v.workspace.name.required_name).toBe(false)
     expect(wrapper.vm.$v.workspace.handle.required_handle).toBe(false)
   })
 
-  it('dispatches updateWorksapce action', () => {
+  it('dispatches updateWorkspace action', () => {
     wrapper.setData({ workspace: { name: 'Edited Workspace' } })
     wrapper.setData({ workspace: { handle: 'edited-workspace' } })
     wrapper.find('form').trigger('submit')

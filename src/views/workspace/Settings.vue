@@ -12,7 +12,7 @@
         v-if="currentWorkspace"
       >
         <form @submit.prevent="updateWorkspace">
-          <form-group name="name" label="Workspace Name">
+          <form-group name="name" label="Workspace Name" class="p-6 border-b-2">
             <base-input
               name="name"
               v-model.trim="workspace.name"
@@ -25,6 +25,7 @@
             name="handle"
             label="Workspace URL"
             hint="Your workplace is accessible only by you and the people from your team you decided to give access to."
+            class="p-6 border-b-2"
           >
             <base-input-group left-text="yorokobi.com/">
               <base-input

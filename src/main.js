@@ -25,7 +25,12 @@ Vue.use(Vuelidate)
 Vue.use(VueLodash)
 
 Vue.use(vuelidateErrorExtractor, {
-  template: FormGroup
+  template: FormGroup,
+  messages: {
+    email: 'Please enter a valid email address.',
+    required: 'Please enter the {attribute}.',
+    minLength: 'Your {attribute} is too short.'
+  }
 })
 
 Vue.component('FormWrapper', templates.FormWrapper)
