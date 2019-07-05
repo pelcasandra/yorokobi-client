@@ -29,7 +29,9 @@ Vue.use(vuelidateErrorExtractor, {
   messages: {
     email: 'Please enter a valid email address.',
     required: 'Please enter the {attribute}.',
-    minLength: 'Your {attribute} is too short.'
+    minLength: 'Your {attribute} is too short.',
+    newRequired: 'Please enter a new {attribute}.',
+    sameAsPassword: "Password confirmation doesn't match password."
   }
 })
 

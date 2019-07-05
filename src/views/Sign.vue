@@ -4,43 +4,31 @@
       <h1 class="text-2xl mb-6 font-medium">Sign In</h1>
     </template>
     <form-wrapper
-      :validator="$v.form"
+      :validator="$v.user"
       :messages="validationMessages"
       class="w-full max-w-xs"
     >
       <form
         @submit.prevent="login"
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
-        :validator="$v.form"
+        :validator="$v.user"
       >
-        <form-group name="email" label="Email" class="mb-4">
-          <template v-slot:label>
-            <label for="email" class="block text-gray-700 text-sm font mb-2"
-              >Email</label
-            >
-          </template>
+        <form-group name="email" label="Email" class="mb-5">
           <base-input
-            v-model.trim="form.email"
+            v-model.trim="user.email"
             name="email"
             type="email"
-            placeholder="martin@yorokobi.com"
-            :validation="$v.form.email"
-            @blur="$v.form.email.$touch()"
+            placeholder="john@yorokobi.com"
+            :validation="$v.user.email"
           />
         </form-group>
         <form-group name="password" label="Password" class="mb-6">
-          <template v-slot:label>
-            <label for="password" class="block text-gray-700 text-sm font mb-2"
-              >Password</label
-            >
-          </template>
           <base-input
-            v-model.trim="form.password"
+            v-model.trim="user.password"
             name="password"
             type="password"
             placeholder="••••••••"
-            :validation="$v.form.password"
-            @blur="$v.form.password.$touch()"
+            :validation="$v.user.password"
           />
         </form-group>
 
@@ -70,7 +58,7 @@ export default {
   components: { SignForm },
   data() {
     return {
-      form: {
+      user: {
         email: null,
         password: null
       },
@@ -81,14 +69,11 @@ export default {
   },
   methods: {
     login() {
-      this.$v.form.$touch()
-      if (!this.$v.form.$invalid) {
+      this.$v.user.$touch()
+      if (!this.$v.user.$invalid) {
         this.$store
           .dispatch('login', {
-            user: {
-              email: this.form.email,
-              password: this.form.password
-            }
+            user: this.user
           })
           .then(() => {
             this.$router.push({ name: 'workspaces' })
@@ -97,7 +82,7 @@ export default {
     }
   },
   validations: {
-    form: {
+    user: {
       email: { email, required },
       password: { required, minLength: minLength(6) }
     }

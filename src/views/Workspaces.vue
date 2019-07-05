@@ -2,7 +2,12 @@
   <div class="m-auto p-8 h-full">
     <div class="flex flex-col items-center">
       <h1 class="text-3xl font-bold mb-8 text-gray-900">Workspaces</h1>
-      <template v-if="!workspace.isLoading">
+      <p v-if="workspace.isLoading">Loading workspaces</p>
+      <template v-else-if="!workspace.workspaces">
+        <p>You have no workspaces.</p>
+        <p>Begin creating your first one below.</p>
+      </template>
+      <template v-else>
         <div class="rounded shadow-md">
           <WorkspaceItem
             v-for="workspace in workspace.workspaces"
@@ -11,7 +16,7 @@
           ></WorkspaceItem>
         </div>
       </template>
-      <p v-else>Loading workspaces</p>
+
       <router-link
         :to="{ name: 'new_workspace' }"
         class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64 mt-8 text-center"

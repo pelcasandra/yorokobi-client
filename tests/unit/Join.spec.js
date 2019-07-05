@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '@/router'
-import Sign from '@/views/Sign'
+import Join from '@/views/Join'
 import Vuelidate from 'vuelidate'
 import FormGroup from '@/components/FormGroup'
 import vuelidateErrorExtractor, { templates } from 'vuelidate-error-extractor'
@@ -12,7 +12,8 @@ Vue.use(Vuelidate)
 Vue.use(vuelidateErrorExtractor, { template: FormGroup })
 Vue.component('FormWrapper', templates.FormWrapper)
 
-describe('Sign.vue', () => {
+describe('Join.vue', () => {
+  const full_name = 'John Smith'
   const email = 'john@yorokobi.com'
   const password = '123456'
   let wrapper
@@ -20,10 +21,10 @@ describe('Sign.vue', () => {
   let actions
 
   beforeEach(() => {
-    actions = { login: jest.fn() }
+    actions = { register: jest.fn() }
     store = new Vuex.Store({ actions })
 
-    wrapper = shallowMount(Sign, {
+    wrapper = shallowMount(Join, {
       store,
       router,
       stubs: {
@@ -31,6 +32,10 @@ describe('Sign.vue', () => {
         BaseInputGroup: '<div />'
       }
     })
+  })
+
+  it('validates full name presence', () => {
+    expect(wrapper.vm.$v.user.full_name.required).toBe(false)
   })
 
   it('validates email presence', () => {
@@ -43,7 +48,7 @@ describe('Sign.vue', () => {
   })
 
   it('validates password presence', () => {
-    expect(wrapper.vm.$v.user.password.required).toBe(false)
+    expect(wrapper.vm.$v.user.password.newRequired).toBe(false)
   })
 
   it('validates password length', () => {
@@ -51,22 +56,29 @@ describe('Sign.vue', () => {
     expect(wrapper.vm.$v.user.password.minLength).toBe(false)
   })
 
+  it('validates password confirmation', () => {
+    wrapper.setData({ user: { password } })
+    expect(wrapper.vm.$v.user.password_confirmation.sameAsPassword).toBe(false)
+  })
+
   it('validates fields on submit', () => {
     wrapper.find('form').trigger('submit')
     expect(wrapper.vm.$v.$anyError).toBe(true)
   })
 
-  it('does not dispatches login action having errors on submit', () => {
+  it('does not dispatches register action having errors on submit', () => {
     wrapper.find('form').trigger('submit')
-    expect(actions.login.mock.calls).toHaveLength(0)
+    expect(actions.register.mock.calls).toHaveLength(0)
   })
 
-  it('dispatches login action', () => {
-    actions.login.mockReturnValue(Promise.resolve(true))
+  it('dispatches register action', () => {
+    actions.register.mockReturnValue(Promise.resolve(true))
+    wrapper.setData({ user: { full_name } })
     wrapper.setData({ user: { email } })
     wrapper.setData({ user: { password } })
+    wrapper.setData({ user: { password_confirmation: password } })
     wrapper.find('form').trigger('submit')
     expect(wrapper.vm.$v.$anyError).toBe(false)
-    expect(actions.login.mock.calls).toHaveLength(1)
+    expect(actions.register.mock.calls).toHaveLength(1)
   })
 })

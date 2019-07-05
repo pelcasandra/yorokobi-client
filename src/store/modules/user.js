@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import UserService from '@/services/UserService'
 
 export default {
   state: {
@@ -8,11 +9,10 @@ export default {
   },
 
   mutations: {
-    SET_USER_DATA(state, userData) {
-      // localStorage.setItem('user', JSON.stringify(userData.data))
-      Vue.axios.defaults.headers.common['Authorization'] = userData.token
-      state.token = userData.token
-      state.user = userData.data
+    SET_USER_DATA(state, data) {
+      Vue.axios.defaults.headers.common['Authorization'] = data.token
+      state.token = data.token
+      state.user = data.user
     },
     LOGOUT(rootState) {
       rootState.user = null
@@ -25,20 +25,23 @@ export default {
   },
 
   actions: {
-    register({ commit }, credentials) {
-      return Vue.axios
-        .post('/register', credentials)
-        .then(({ data, headers }) => {
-          commit('SET_USER_DATA', data, headers)
-        })
-    },
-    login({ commit }, credentials) {
-      return Vue.axios.post('login', credentials).then(({ data, headers }) => {
+    register({ commit }, user) {
+      return UserService.postUser(user).then(response => {
         commit('SET_USER_DATA', {
-          data,
-          token: headers.authorization
+          user: response.data,
+          token: response.headers.authorization
         })
       })
+    },
+    login({ commit }, credentials) {
+      return UserService.postAuthenticationCredentials(credentials).then(
+        response => {
+          commit('SET_USER_DATA', {
+            user: response.data,
+            token: response.headers.authorization
+          })
+        }
+      )
     },
     logout({ commit }) {
       commit('LOGOUT')
