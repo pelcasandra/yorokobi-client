@@ -31,7 +31,8 @@ Vue.use(vuelidateErrorExtractor, {
     required: 'Please enter the {attribute}.',
     minLength: 'Your {attribute} is too short.',
     newRequired: 'Please enter a new {attribute}.',
-    sameAsPassword: "Password confirmation doesn't match password."
+    sameAsPassword: "Password confirmation doesn't match password.",
+    unauthorized: 'Invalid credentials. Please try again.'
   }
 })
 
@@ -86,14 +87,14 @@ new Vue({
     }
     //
     Vue.axios.interceptors.response.use(
-      response => response,
-      error => {
-        if (error.response.status === 401) {
-          this.$router.push('/')
-          this.$store.dispatch('logout')
-        }
-        return Promise.reject(error)
-      }
+      response => response
+      // error => {
+      //   if (error.response.status === 401) {
+      //     this.$router.push('/')
+      //     this.$store.dispatch('logout')
+      //   }
+      //   return Promise.reject(error)
+      // }
     )
   }
 }).$mount('#app')

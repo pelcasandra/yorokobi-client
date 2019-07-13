@@ -11,7 +11,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 Vue.use(VueAxios, axios)
-Vue.axios.defaults.baseURL = '//192.168.1.14:3000'
+Vue.axios.defaults.baseURL = '//localhost:3000'
 
 export default new Vuex.Store({
   modules: { agent, backup, user, stash, workspace },

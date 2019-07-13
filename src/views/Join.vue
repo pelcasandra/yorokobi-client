@@ -1,12 +1,20 @@
 <template>
   <SignForm>
     <template v-slot:header>
-      <h1 class="text-3xl font-bold">Get started now with a 30-day free trial.</h1>
+      <h1 class="text-3xl font-bold">Get started now.</h1>
       <p class="mb-6 mt-2">It takes a minute a join.</p>
     </template>
     <form-wrapper :validator="$v.user" :messages="validationMessages">
-      <form @submit.prevent="register" class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4">
-        <form-group name="full_name" label="Full Name" class="mb-5" attribute="full name">
+      <form
+        @submit.prevent="register"
+        class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
+      >
+        <form-group
+          name="full_name"
+          label="Full Name"
+          class="mb-5"
+          attribute="full name"
+        >
           <base-input
             v-model.trim="user.full_name"
             name="full_name"
@@ -33,7 +41,11 @@
             :validation="$v.user.password"
           />
         </form-group>
-        <form-group name="password_confirmation" label="Repeat Password" class="mb-6">
+        <form-group
+          name="password_confirmation"
+          label="Repeat Password"
+          class="mb-6"
+        >
           <base-input
             v-model.trim="user.password_confirmation"
             name="password_confirmation"
@@ -46,8 +58,12 @@
           type="submit"
           name="button"
           class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-        >Register</button>
-        <p class="mt-6 text-sm">I agree to the Yorokobi Terms of Use and Privacy Policy.</p>
+        >
+          Register
+        </button>
+        <p class="mt-6 text-sm">
+          I agree to the Yorokobi Terms of Use and Privacy Policy.
+        </p>
       </form>
     </form-wrapper>
     <template v-slot:footer>
@@ -62,9 +78,12 @@
 <script>
 import { required, email, minLength, sameAs } from 'vuelidate/lib/validators'
 import SignForm from '@/components/SignForm'
+import RemoteValidation from '@/mixins/RemoteValidation'
+import has from 'lodash/has'
 
 export default {
   components: { SignForm },
+  mixins: [RemoteValidation],
   data() {
     return {
       user: {
@@ -78,24 +97,35 @@ export default {
       }
     }
   },
+  computed: {
+    validations() {
+      return {
+        user: {
+          email: { required, email },
+          full_name: { required },
+          password: { newRequired: required, minLength: minLength(6) },
+          password_confirmation: {
+            sameAsPassword: sameAs('password'),
+            minLength: minLength(6)
+          }
+        }
+      }
+    }
+  },
   methods: {
     register() {
       this.$v.user.$touch()
       if (!this.$v.user.$invalid) {
-        this.$store.dispatch('register', { user: this.user }).then(() => {
-          this.$router.push({ name: 'workspaces' })
-        })
-      }
-    }
-  },
-  validations: {
-    user: {
-      email: { email, required },
-      full_name: { required },
-      password: { newRequired: required, minLength: minLength(6) },
-      password_confirmation: {
-        sameAsPassword: sameAs('password'),
-        minLength: minLength(6)
+        this.$store
+          .dispatch('register', { user: this.user })
+          .then(() => {
+            this.$router.push({ name: 'workspaces' })
+          })
+          .catch(error => {
+            if (has(error, 'response.data.errors')) {
+              this.remoteErrors = error.response.data.errors
+            }
+          })
       }
     }
   }

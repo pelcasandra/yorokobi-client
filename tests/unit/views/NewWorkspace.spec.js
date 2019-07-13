@@ -4,7 +4,7 @@ import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import Settings from '@/views/workspace/Settings'
+import NewWorkspace from '@/views/NewWorkspace'
 import { templates } from 'vuelidate-error-extractor'
 
 Vue.use(Vuex)
@@ -13,48 +13,18 @@ Vue.use(Vuelidate)
 Vue.use(VueLodash)
 Vue.component('FormWrapper', templates.FormWrapper)
 
-describe('Settings.vue', () => {
-  const workspace = { id: '1', name: 'workspace', handle: 'workspace' }
+describe('NewWorkspace.vue', () => {
   let wrapper
-  let state
   let actions
-  let getters
   let store
 
   beforeEach(() => {
-    state = {
-      workspace: {
-        alreadyFetched: true,
-        workspaces: {
-          '1': workspace
-        }
-      }
-    }
+    actions = { createWorkspace: jest.fn() }
 
-    actions = { updateWorkspace: jest.fn() }
+    store = new Vuex.Store({ actions })
 
-    getters = {
-      getWorkspaceByHandle: () => () => {
-        return workspace
-      }
-    }
-
-    store = new Vuex.Store({
-      state,
-      getters,
-      actions
-    })
-
-    wrapper = shallowMount(Settings, {
+    wrapper = shallowMount(NewWorkspace, {
       store,
-      propsData: {
-        handle: 'workspace'
-      },
-      data: function() {
-        return {
-          workspace: workspace
-        }
-      },
       stubs: {
         FormGroup: '<div />',
         BaseInput: '<div />',
@@ -63,25 +33,34 @@ describe('Settings.vue', () => {
     })
   })
 
-  it('does not set automatic handle from any given name', () => {
+  it('set automatic handle from any given name', () => {
     wrapper.setData({ workspace: { name: 'New @Workspace' } })
-    expect(wrapper.vm.workspace.handle).toBe('workspace')
+    expect(wrapper.vm.workspace.handle).toBe('new-workspace')
+  })
+
+  it('prevents manually set handle to be replaced by a new name', () => {
+    wrapper.setData({ automaticHandle: false })
+    wrapper.setData({ workspace: { name: 'New Workspace', handle: '123' } })
+    expect(wrapper.vm.workspace.handle).toBe('123')
   })
 
   it('validates empty fields', () => {
-    wrapper.setData({ workspace: { name: '' } })
-    wrapper.setData({ workspace: { handle: '' } })
     wrapper.find('form').trigger('submit')
     expect(wrapper.vm.$v.$anyError).toBe(true)
     expect(wrapper.vm.$v.workspace.name.required_name).toBe(false)
     expect(wrapper.vm.$v.workspace.handle.required_handle).toBe(false)
   })
 
-  it('dispatches updateWorkspace action', () => {
-    wrapper.setData({ workspace: { name: 'Edited Workspace' } })
-    wrapper.setData({ workspace: { handle: 'edited-workspace' } })
+  it('dispatches createWorksapce action', () => {
+    actions.createWorkspace.mockReturnValue(Promise.resolve(true))
+    wrapper.setData({
+      workspace: {
+        name: 'My Workspace',
+        handle: 'my-workspace'
+      }
+    })
     wrapper.find('form').trigger('submit')
-    expect(actions.updateWorkspace.mock.calls).toHaveLength(1)
+    expect(actions.createWorkspace.mock.calls).toHaveLength(1)
   })
 
   it('validates handle is taken', () => {
@@ -95,6 +74,12 @@ describe('Settings.vue', () => {
       }
     ]
 
+    wrapper.setData({
+      workspace: {
+        name: 'My Workspace',
+        handle: 'my-workspace'
+      }
+    })
     wrapper.setData({ requestErrors })
     wrapper.find('form').trigger('submit')
 

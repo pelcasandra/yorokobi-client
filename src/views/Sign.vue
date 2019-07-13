@@ -13,6 +13,10 @@
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
         :validator="$v.user"
       >
+        <template v-if="$v.form">
+          <form-group :validator="$v.form" class="mb-5"></form-group>
+        </template>
+
         <form-group name="email" label="Email" class="mb-5">
           <base-input
             v-model.trim="user.email"
@@ -44,7 +48,8 @@
     <template v-slot:footer>
       <router-link :to="{ name: 'join' }">
         New to Yorokobi?
-        <strong>Sign Up</strong>.
+        <strong>Sign Up</strong>
+        .
       </router-link>
     </template>
   </SignForm>
@@ -53,17 +58,31 @@
 <script>
 import { required, email, minLength } from 'vuelidate/lib/validators'
 import SignForm from '@/components/SignForm'
+import RemoteValidation from '@/mixins/RemoteValidation'
+import has from 'lodash/has'
 
 export default {
   components: { SignForm },
+  mixins: [RemoteValidation],
   data() {
     return {
       user: {
         email: null,
         password: null
       },
-      validationMessages: {
-        required: 'Please enter your {attribute}.'
+      validationMessages: {}
+    }
+  },
+  computed: {
+    validations() {
+      return {
+        user: {
+          email: {
+            email,
+            required
+          },
+          password: { required, minLength: minLength(6) }
+        }
       }
     }
   },
@@ -78,13 +97,12 @@ export default {
           .then(() => {
             this.$router.push({ name: 'workspaces' })
           })
+          .catch(error => {
+            if (has(error, 'response.data.errors')) {
+              this.remoteErrors = error.response.data.errors
+            }
+          })
       }
-    }
-  },
-  validations: {
-    user: {
-      email: { email, required },
-      password: { required, minLength: minLength(6) }
     }
   }
 }

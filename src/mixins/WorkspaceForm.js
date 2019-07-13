@@ -13,6 +13,7 @@ export default {
       localMessages: {
         required_name: 'Please enter a name for your workspace.',
         required_handle: 'Please chose a unique URL for your workspace.',
+        unauthorized: 'you dont have access',
         parametizable:
           'Your handle name should contain only letters, numbers and hyphens (-).',
         taken:

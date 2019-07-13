@@ -19,6 +19,7 @@
 export default {
   name: 'BaseInput',
   props: {
+    error: Object,
     name: String,
     placeholder: [String, Number],
     type: { type: String, default: 'text' },
