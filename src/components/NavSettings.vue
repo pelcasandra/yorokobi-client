@@ -7,8 +7,13 @@
         </li>
         <li>
           <router-link
-            :to="{ name: 'workspaces' }"
+            :to="{ name: 'settings' }"
             class="hover:bg-indigo-100 active:bg-indigo-200 focus:bg-indigo-200 py-3 px-4 block mx-4 rounded"
+            :class="
+              $route.name === 'settings'
+                ? 'bg-indigo-200 hover:bg-indigo-200'
+                : ''
+            "
             >General</router-link
           >
         </li>

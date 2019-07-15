@@ -18,6 +18,11 @@
               params: { handle: this.handle }
             }"
             class="hover:bg-indigo-500 focus:bg-indigo-400 p-4 pb-5 rounded"
+            :class="
+              ['workspace', 'backup', 'stash'].includes($route.name)
+                ? 'bg-indigo-400 hover:bg-indigo-400'
+                : ''
+            "
           >
             <svg
               class="fill-current text-white inline-block"
@@ -35,6 +40,11 @@
               params: { handle: this.handle }
             }"
             class="hover:bg-indigo-500 focus:bg-indigo-400 p-4 pb-5 rounded"
+            :class="
+              $route.name === 'settings'
+                ? 'bg-indigo-400 hover:bg-indigo-400'
+                : ''
+            "
           >
             <svg
               class="fill-current text-white inline-block"
