@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row bg-indigo-200 h-screen">
+  <div class="flex flex-row bg-indigo-200 min-h-screen">
     <Nav :handle="handle" />
     <router-view />
   </div>
