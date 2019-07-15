@@ -2,7 +2,7 @@
   <div class="m-auto p-8 h-full">
     <div class="flex flex-col items-center">
       <h1 class="text-3xl font-bold mb-8 text-gray-900">Workspaces</h1>
-      <p v-if="workspace.isLoading">Loading workspaces</p>
+      <base-spinner v-if="workspace.isLoading" />
       <template v-else-if="!workspace.workspaces">
         <p>You have no workspaces.</p>
         <p>Begin creating your first one below.</p>

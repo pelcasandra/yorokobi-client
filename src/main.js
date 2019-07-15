@@ -11,6 +11,7 @@ import VueLodash from 'vue-lodash'
 import VueMeta from 'vue-meta'
 import FormGroup from '@/components/FormGroup'
 import vuelidateErrorExtractor, { templates } from 'vuelidate-error-extractor'
+
 import '@/assets/css/tailwind.css'
 
 window.eventBus = new Vue()

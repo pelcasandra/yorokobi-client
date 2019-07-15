@@ -7,7 +7,7 @@
         <li class="m-5 mb-10">
           <router-link :to="{ name: 'workspaces' }">
             <svg class="fill-current text-white inline-block h-10 w-10">
-              <use xlink:href="@/assets/images/icon-sprite.svg#brand"></use>
+              <use xlink:href="@/assets/images/icon-sprite.svg#brand" />
             </svg>
           </router-link>
         </li>
@@ -24,7 +24,7 @@
               width="32"
               height="32"
             >
-              <use xlink:href="@/assets/images/icon-sprite.svg#stashes"></use>
+              <use xlink:href="@/assets/images/icon-sprite.svg#stashes" />
             </svg>
           </router-link>
         </li>
@@ -41,7 +41,7 @@
               width="32"
               height="32"
             >
-              <use xlink:href="@/assets/images/icon-sprite.svg#settings"></use>
+              <use xlink:href="@/assets/images/icon-sprite.svg#settings" />
             </svg>
           </router-link>
         </li>
@@ -57,7 +57,7 @@
               width="34"
               height="34"
             >
-              <use xlink:href="@/assets/images/icon-sprite.svg#help"></use>
+              <use xlink:href="@/assets/images/icon-sprite.svg#help" />
             </svg>
           </a>
         </li>
@@ -72,7 +72,7 @@
               width="34"
               height="34"
             >
-              <use xlink:href="@/assets/images/icon-sprite.svg#logout"></use>
+              <use xlink:href="@/assets/images/icon-sprite.svg#logout" />
             </svg>
           </a>
         </li>

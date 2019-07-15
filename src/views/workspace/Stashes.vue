@@ -12,7 +12,7 @@
         ></StashItem>
       </div>
     </template>
-    <p v-else>Loading stashes</p>
+    <base-spinner v-else />
     <button
       class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64 mt-8"
     >
