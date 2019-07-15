@@ -62,6 +62,12 @@ import WorkspaceForm from '@/mixins/WorkspaceForm.js'
 
 export default {
   mixins: [FlexCenter, WorkspaceForm],
+  metaInfo() {
+    return {
+      title: 'New Workspace',
+      titleTemplate: null
+    }
+  },
   watch: {
     'workspace.name': 'generateAutomaticHandle'
   },

@@ -84,6 +84,9 @@ import has from 'lodash/has'
 export default {
   components: { SignForm },
   mixins: [RemoteValidation],
+  metaInfo: {
+    title: 'Join'
+  },
   data() {
     return {
       user: {

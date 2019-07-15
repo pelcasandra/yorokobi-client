@@ -3,11 +3,7 @@
     <template v-slot:header>
       <h1 class="text-2xl mb-6 font-medium">Sign In</h1>
     </template>
-    <form-wrapper
-      :validator="$v.user"
-      :messages="validationMessages"
-      class="w-full max-w-xs"
-    >
+    <form-wrapper :validator="$v.user" :messages="validationMessages" class="w-full max-w-xs">
       <form
         @submit.prevent="login"
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
@@ -40,16 +36,13 @@
           type="submit"
           name="button"
           class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-        >
-          Login
-        </button>
+        >Login</button>
       </form>
     </form-wrapper>
     <template v-slot:footer>
       <router-link :to="{ name: 'join' }">
         New to Yorokobi?
-        <strong>Sign Up</strong>
-        .
+        <strong>Sign Up</strong>.
       </router-link>
     </template>
   </SignForm>
@@ -64,6 +57,9 @@ import has from 'lodash/has'
 export default {
   components: { SignForm },
   mixins: [RemoteValidation],
+  metaInfo: {
+    title: 'Login'
+  },
   data() {
     return {
       user: {

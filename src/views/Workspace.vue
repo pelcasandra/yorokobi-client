@@ -16,6 +16,7 @@ export default {
     if (!this.$store.getters.getWorkspaceByHandle(this.handle)) {
       this.$store
         .dispatch('fetchWorkspace', this.handle)
+        .then(() => this.$meta().refresh())
         .catch(() => this.$_error(NotFound))
     }
   }

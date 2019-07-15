@@ -8,6 +8,7 @@ import camelCase from 'lodash/camelCase'
 import VueTimeago from 'vue-timeago'
 import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
+import VueMeta from 'vue-meta'
 import FormGroup from '@/components/FormGroup'
 import vuelidateErrorExtractor, { templates } from 'vuelidate-error-extractor'
 import '@/assets/css/tailwind.css'
@@ -23,6 +24,10 @@ Vue.use(VueTimeago, {
 
 Vue.use(Vuelidate)
 Vue.use(VueLodash)
+
+Vue.use(VueMeta, {
+  // refreshOnceOnNavigation: true
+})
 
 Vue.use(vuelidateErrorExtractor, {
   template: FormGroup,
@@ -96,5 +101,10 @@ new Vue({
       //   return Promise.reject(error)
       // }
     )
+  },
+  metaInfo: {
+    titleTemplate: titleChunk => {
+      return titleChunk ? `${titleChunk} - Yorokobi` : 'Yorokobi'
+    }
   }
 }).$mount('#app')

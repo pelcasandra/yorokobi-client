@@ -24,10 +24,20 @@
 <script>
 import { mapState } from 'vuex'
 import StashItem from '@/components/StashItem'
+import Workspace from '@/mixins/Workspace'
 
 export default {
   components: { StashItem },
   props: ['handle'],
+  mixins: [Workspace],
+  metaInfo() {
+    return {
+      title: this.currentWorkspace
+        ? `${this.currentWorkspace.name}`
+        : 'Stashes',
+      titleTemplate: null
+    }
+  },
   created() {
     if (!this.$store.getters.getStashesByWorkspaceHandle(this.handle).length) {
       this.$store.dispatch('fetchStashesByWorkspaceHandle', this.handle)

@@ -2,9 +2,7 @@
   <div class="flex w-full">
     <NavSettings />
     <section class="flex-grow flex flex-col items-center">
-      <h1 class="mt-5 mb-8 text-2xl font-medium text-center">
-        Settings / General
-      </h1>
+      <h1 class="mt-5 mb-8 text-2xl font-medium text-center">Settings / General</h1>
       <form-wrapper
         :validator="$v.workspace"
         :messages="localMessages"
@@ -42,9 +40,7 @@
               type="submit"
               name="button"
               class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64"
-            >
-              Save Changes
-            </button>
+            >Save Changes</button>
           </div>
         </form>
       </form-wrapper>
@@ -64,6 +60,14 @@ export default {
   components: { NavSettings },
   props: ['handle'],
   mixins: [Workspace, WorkspaceForm],
+  metaInfo() {
+    return {
+      title: this.currentWorkspace
+        ? `${this.currentWorkspace.name} Settings`
+        : 'Settings',
+      titleTemplate: null
+    }
+  },
   watch: {
     currentWorkspace: {
       immediate: true,

@@ -34,7 +34,10 @@ import { mapState } from 'vuex'
 export default {
   components: { WorkspaceItem },
   mixins: [FlexCenter],
-
+  metaInfo: {
+    title: 'Your Workspaces',
+    titleTemplate: null
+  },
   mounted() {
     if (!this.$store.state.workspace.alreadyFetched) {
       this.$store.dispatch('fetchWorkspaces')
