@@ -1,7 +1,7 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">Usage & Plan</h1>
-    <div v-if="workspace && paymentMethod" class="lg:w-2/3 w-4/5">
+    <div v-if="workspace && paymentMethodIsLoaded" class="lg:w-2/3 w-4/5">
       <div class="bg-white shadow-md rounded mb-4 p-6 text-gray-700">
         <div class="flex w-full justify-between items-end">
           <div class="font-bold">Your current usage</div>
@@ -66,6 +66,7 @@
           <div>{{ paymentMethod.card.brand }}</div>
           <div class="ml-3">•••• •••• •••• {{ paymentMethod.card.last4 }}</div>
         </div>
+        <div v-else class="text-gray-700 text-sm">No payment method found.</div>
       </div>
     </div>
     <base-spinner v-else />
