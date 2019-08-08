@@ -92,16 +92,7 @@ new Vue({
       ] = this.$store.state.user.token
     }
     //
-    Vue.axios.interceptors.response.use(
-      response => response
-      // error => {
-      //   if (error.response.status === 401) {
-      //     this.$router.push('/')
-      //     this.$store.dispatch('logout')
-      //   }
-      //   return Promise.reject(error)
-      // }
-    )
+    Vue.axios.interceptors.response.use(response => response)
   },
   metaInfo: {
     titleTemplate: titleChunk => {

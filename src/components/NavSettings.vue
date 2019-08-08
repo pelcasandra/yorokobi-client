@@ -7,10 +7,10 @@
         </li>
         <li>
           <router-link
-            :to="{ name: 'settings' }"
+            :to="{ name: 'workspace_settings_general' }"
             class="hover:bg-indigo-100 active:bg-indigo-200 focus:bg-indigo-200 py-3 px-4 block mx-4 rounded"
             :class="
-              $route.name === 'settings'
+              $route.name === 'workspace_settings_general'
                 ? 'bg-indigo-200 hover:bg-indigo-200'
                 : ''
             "
@@ -22,8 +22,14 @@
         </li>
         <li>
           <router-link
-            :to="{ name: 'workspaces' }"
+            :to="{ name: 'workspace_subscription_usage' }"
             class="hover:bg-indigo-100 active:bg-indigo-200 focus:bg-indigo-200 py-3 px-4 block mx-4 rounded"
+            :class="
+              $route.name === 'workspace_subscription_usage' ||
+              $route.name === 'change_plan'
+                ? 'bg-indigo-200 hover:bg-indigo-200'
+                : ''
+            "
             >Usage & Plan</router-link
           >
         </li>

@@ -79,16 +79,6 @@ export default {
     },
     touchFormValidations() {
       this.$v.form.$touch()
-    },
-    generateValidations() {
-      console.log('watcher enabled')
-      this.remoteErrors.forEach(function(element) {
-        if (element.resource && element.field) {
-          console.log('it has a resource/field')
-        } else {
-          console.log('it is a general error')
-        }
-      })
     }
   }
 }

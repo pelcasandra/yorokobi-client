@@ -1,14 +1,13 @@
 <template>
-  <div class="new-workspace m-auto p-8 h-full w-full">
-    <h1 class="text-3xl font-bold mb-8 text-center text-gray-900">
-      Create a new Workspace
-    </h1>
+  <section class="flex-grow flex flex-col items-center">
+    <h1 class="my-8 text-2xl font-bold text-center">General Settings</h1>
     <form-wrapper
       :validator="$v.form"
       :messages="localMessages"
-      class="bg-white shadow-md rounded mb-4"
+      class="bg-white shadow-md rounded mb-4 lg:w-2/3 w-4/5"
+      v-if="form"
     >
-      <form @submit.prevent="createWorkspace">
+      <form @submit.prevent="updateWorkspace">
         <form-group name="name" label="Workspace Name" class="p-6 border-b-2">
           <base-input
             name="name"
@@ -29,63 +28,54 @@
               name="handle"
               v-model.trim="form.handle"
               placeholder="workspace"
-              @keyup="disableAutomaticHandle"
               @blur="$v.form.handle.$touch()"
               :validation="$v.form.handle"
             />
           </base-input-group>
         </form-group>
-        <div class="p-6 block text-center">
+        <div class="p-6 block">
           <button
             type="submit"
             name="button"
-            class="bg-indigo-500 text-lg hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64"
+            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64"
           >
-            Create new workspace
+            Save Changes
           </button>
-          <span class="mx-3 text-gray-600">or</span>
-          <router-link
-            :to="{ name: 'workspaces' }"
-            href="#"
-            class="text-gray-600 underline font-medium"
-            >Go back</router-link
-          >
         </div>
       </form>
     </form-wrapper>
-  </div>
+    <base-spinner v-else />
+  </section>
 </template>
 
 <script>
-import FlexCenter from '@/mixins/FlexCenter.js'
+import Workspace from '@/mixins/Workspace.js'
 import WorkspaceForm from '@/mixins/WorkspaceForm.js'
 
 export default {
-  mixins: [FlexCenter, WorkspaceForm],
+  props: ['handle'],
+  mixins: [Workspace, WorkspaceForm],
   metaInfo() {
     return {
-      title: 'New Workspace',
+      title: this.workspace ? `${this.workspace.name} Settings` : 'Settings',
       titleTemplate: null
     }
   },
   watch: {
-    'form.name': 'generateAutomaticHandle'
+    workspace: {
+      immediate: true,
+      handler: 'cloneWorkspace'
+    }
   },
   methods: {
-    createWorkspace() {
-      return this.dispatchWorkspace('createWorkspace')
-    },
-    generateAutomaticHandle() {
-      if (this.automaticHandle) {
-        this.form.handle = this.getParameterizedHandle()
+    cloneWorkspace() {
+      if (this.workspace) {
+        this.form = this._.clone(this.workspace)
       }
+    },
+    updateWorkspace() {
+      return this.dispatchWorkspace('updateWorkspace')
     }
   }
 }
 </script>
-
-<style scoped>
-.new-workspace {
-  max-width: 640px;
-}
-</style>

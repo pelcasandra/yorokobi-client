@@ -26,7 +26,7 @@ export default {
 
   actions: {
     fetchWorkspaces({ commit }) {
-      WorkspaceService.getWorkspaces().then(({ data }) => {
+      return WorkspaceService.getWorkspaces().then(({ data }) => {
         const workspaces = normalize(data, { workspaces: [workspace] })
         commit('SET_WORKSPACES', workspaces)
       })

@@ -9,6 +9,9 @@ import Settings from '@/views/workspace/Settings.vue'
 import Sign from '@/views/Sign.vue'
 import Stash from '@/views/workspace/Stash.vue'
 import Stashes from '@/views/workspace/Stashes.vue'
+import SettingsGeneral from '@/views/workspace/settings/General.vue'
+import SettingsPlan from '@/views/workspace/settings/Plan.vue'
+import SettingsUsage from '@/views/workspace/settings/Usage.vue'
 import Workspace from '@/views/Workspace.vue'
 import Workspaces from '@/views/Workspaces.vue'
 
@@ -59,7 +62,27 @@ const router = new Router({
           path: 'settings',
           name: 'settings',
           component: Settings,
-          props: true
+          props: true,
+          children: [
+            {
+              path: 'usage',
+              name: 'workspace_subscription_usage',
+              component: SettingsUsage,
+              props: true
+            },
+            {
+              path: 'plan',
+              name: 'change_plan',
+              component: SettingsPlan,
+              props: true
+            },
+            {
+              path: 'general',
+              name: 'workspace_settings_general',
+              component: SettingsGeneral,
+              props: true
+            }
+          ]
         },
         {
           path: ':id',

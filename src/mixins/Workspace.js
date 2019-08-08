@@ -1,6 +1,6 @@
 export default {
   computed: {
-    currentWorkspace() {
+    workspace() {
       return this.$store.getters.getWorkspaceByHandle(this.handle)
     }
   }

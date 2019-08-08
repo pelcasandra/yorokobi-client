@@ -40,7 +40,13 @@ export default {
   },
   mounted() {
     if (!this.$store.state.workspace.alreadyFetched) {
-      this.$store.dispatch('fetchWorkspaces')
+      this.$store.dispatch('fetchWorkspaces').catch(error => {
+        if (error.response.status === 404) {
+          this.$router.push('/')
+          this.$store.dispatch('logout')
+        }
+        return Promise.reject(error)
+      })
     }
   },
   computed: mapState(['workspace'])

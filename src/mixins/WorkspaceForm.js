@@ -5,7 +5,7 @@ export default {
     return {
       automaticHandle: true,
       requestErrors: [],
-      workspace: {
+      form: {
         id: null,
         handle: null,
         name: null
@@ -22,7 +22,7 @@ export default {
     }
   },
   watch: {
-    'workspace.handle': function() {
+    'form.handle': function() {
       this.removeRequestErrors('handle')
     }
   },
@@ -40,7 +40,7 @@ export default {
       }
     },
     getParameterizedHandle() {
-      let parameterized_name = this.workspace.name
+      let parameterized_name = this.form.name
         .toLowerCase()
         .replace(/\s+|_/g, '-')
         .match(/[a-zA-Z0-9-]/g)
@@ -60,14 +60,14 @@ export default {
       return !!errors.length
     },
     dispatchWorkspace(action) {
-      this.$v.workspace.$touch()
-      if (!this.$v.workspace.$invalid) {
+      this.$v.form.$touch()
+      if (!this.$v.form.$invalid) {
         this.$store
-          .dispatch(action, this.workspace)
+          .dispatch(action, this.form)
           .then(() =>
             this.$router.push({
               name: 'workspace',
-              params: { handle: this.workspace.handle }
+              params: { handle: this.form.handle }
             })
           )
           .catch(error => {
@@ -79,7 +79,7 @@ export default {
     }
   },
   validations: {
-    workspace: {
+    form: {
       name: { required_name: required },
       handle: {
         required_handle: required,

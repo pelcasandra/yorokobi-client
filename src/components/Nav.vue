@@ -36,15 +36,11 @@
         <li class="mb-8">
           <router-link
             :to="{
-              name: 'settings',
+              name: 'workspace_settings_general',
               params: { handle: this.handle }
             }"
             class="hover:bg-indigo-500 focus:bg-indigo-400 p-4 pb-5 rounded"
-            :class="
-              $route.name === 'settings'
-                ? 'bg-indigo-400 hover:bg-indigo-400'
-                : ''
-            "
+            :class="isSettingsPath ? 'bg-indigo-400 hover:bg-indigo-400' : ''"
           >
             <svg
               class="fill-current text-white inline-block"
@@ -97,6 +93,9 @@ import { mapActions } from 'vuex'
 export default {
   props: ['handle'],
   computed: {
+    isSettingsPath() {
+      return /^\/[a-zA-Z0-9-]+\/settings/.test(this.$route.path)
+    },
     ...authComputed
   },
   methods: mapActions(['logout'])

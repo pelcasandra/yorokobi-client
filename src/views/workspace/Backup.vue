@@ -29,12 +29,9 @@
         </div>
 
         <div class="border-b-2 p-5">
-          Run on
-          <span class="font-medium">{{ agent.hostname }}</span
-          >.
-          <div class="text-gray-600 text-sm font mt-1">
-            {{ agent.ip_address }}
-          </div>
+          Ran on
+          <span class="font-medium">{{ agent.hostname }}</span>.
+          <div class="text-gray-600 text-sm font mt-1">{{ agent.ip_address }}</div>
         </div>
       </div>
       <base-spinner v-else />
@@ -44,21 +41,17 @@
         class="bg-white lg:w-1/2 w-4/5 rounded overflow-hidden mb-8 shadow-md"
       >
         <div class="border-b-2 border-black-700 p-5">
-          <h1 class="text-xl font-bold">Get this copy</h1>
+          <h1 class="text-xl font-bold">Get a copy</h1>
         </div>
         <div class="border-b-2 p-5">
           <div
-            class="break-all bg-gray-300 text-sm p-5"
+            class="break-all bg-gray-200 text-sm p-5"
             @focus="$event.target.select()"
-          >
-            {{ backup.download_link }}
-          </div>
+          >{{ backup.download_link }}</div>
           <button
             @click="downloadLink()"
             class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64 mt-8"
-          >
-            Get this copy
-          </button>
+          >Get this copy</button>
         </div>
       </div>
     </section>
@@ -77,9 +70,7 @@ export default {
   metaInfo() {
     return {
       title: this.backup
-        ? `Backup #${this.backup.number} - ${this.backup.workspace}/${
-            this.backup.stash
-          }`
+        ? `Backup #${this.backup.number} - ${this.backup.workspace}/${this.backup.stash}`
         : 'Loading',
       titleTemplate: null
     }

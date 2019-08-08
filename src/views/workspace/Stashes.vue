@@ -32,9 +32,7 @@ export default {
   mixins: [Workspace],
   metaInfo() {
     return {
-      title: this.currentWorkspace
-        ? `${this.currentWorkspace.name}`
-        : 'Stashes',
+      title: this.workspace ? `${this.workspace.name}` : 'Stashes',
       titleTemplate: null
     }
   },
