@@ -14,7 +14,7 @@
           <div
             class="bg-indigo-400 h-6 w-half rounded"
             :style="{
-              width: `${this.currentUsageBar}` + '%'
+              width: `${this.currentUsagePercentage}` + '%'
             }"
           />
         </div>
@@ -44,10 +44,28 @@
         </div>
       </div>
       <div class="mt-8 bg-white shadow-md rounded mb-4 p-6">
-        <div class="font-bold text-gray-700">Payment method</div>
-        {{ $store.payment_methods }}
-        {{ workspace.id }}
-        <p>{{ paymentMethod }}</p>
+        <div class="font-bold text-gray-700 mb-4">Payment method</div>
+        <div
+          v-if="paymentMethod"
+          class="text-gray-700 text-sm flex items-center"
+        >
+          <svg
+            class="bg-gray-200 fill-current text-indigo-500 mr-3 rounded"
+            width="45"
+            height="28.13"
+            :alt="paymentMethod.card.brand"
+            :title="paymentMethod.card.brand"
+          >
+            <use
+              :xlink:href="
+                require(`@/assets/images/icon-sprite.svg`) +
+                  `#${this.cardBrandParameterized}`
+              "
+            />
+          </svg>
+          <div>{{ paymentMethod.card.brand }}</div>
+          <div class="ml-3">•••• •••• •••• {{ paymentMethod.card.last4 }}</div>
+        </div>
       </div>
     </div>
     <base-spinner v-else />
@@ -58,19 +76,21 @@
 import capitalize from 'lodash/capitalize'
 import filesize from 'filesize'
 import PaymentMethod from '@/mixins/PaymentMethod.js'
-import Workspace from '@/mixins/Workspace.js'
 
 export default {
   name: 'Usage',
-  props: ['handle'],
-  mixins: [PaymentMethod, Workspace],
+  props: ['workspace'],
+  mixins: [PaymentMethod],
   computed: {
-    currentUsageBar() {
+    currentUsagePercentage() {
       return (
         parseInt(
           (this.workspace.quota_total / this.workspace.quota_used) * 100
         ) || 0
       )
+    },
+    cardBrandParameterized() {
+      return this.paymentMethod.card.brand.toLowerCase().replace(' ', '-')
     }
   },
   watch: {
