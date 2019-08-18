@@ -45,27 +45,7 @@
       </div>
       <div class="mt-8 bg-white shadow-md rounded mb-4 p-6">
         <div class="font-bold text-gray-700 mb-4">Payment method</div>
-        <div
-          v-if="paymentMethod"
-          class="text-gray-700 text-sm flex items-center"
-        >
-          <svg
-            class="bg-gray-200 fill-current text-indigo-500 mr-3 rounded"
-            width="45"
-            height="28.13"
-            :alt="paymentMethod.card.brand"
-            :title="paymentMethod.card.brand"
-          >
-            <use
-              :xlink:href="
-                require(`@/assets/images/icon-sprite.svg`) +
-                  `#${this.cardBrandParameterized}`
-              "
-            />
-          </svg>
-          <div>{{ paymentMethod.card.brand }}</div>
-          <div class="ml-3">•••• •••• •••• {{ paymentMethod.card.last4 }}</div>
-        </div>
+        <payment-method v-if="paymentMethod" :method="paymentMethod" />
         <div v-else class="text-gray-700 text-sm">No payment method found.</div>
       </div>
     </div>
@@ -76,12 +56,14 @@
 <script>
 import capitalize from 'lodash/capitalize'
 import filesize from 'filesize'
-import PaymentMethod from '@/mixins/PaymentMethod.js'
+import PaymentMethod from '@/components/PaymentMethod'
+import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 
 export default {
+  components: { PaymentMethod },
   name: 'Usage',
   props: ['workspace'],
-  mixins: [PaymentMethod],
+  mixins: [PaymentMethodMixin],
   computed: {
     currentUsagePercentage() {
       return (
@@ -89,22 +71,6 @@ export default {
           (this.workspace.quota_total / this.workspace.quota_used) * 100
         ) || 0
       )
-    },
-    cardBrandParameterized() {
-      return this.paymentMethod.card.brand.toLowerCase().replace(' ', '-')
-    }
-  },
-  watch: {
-    workspace: {
-      immediate: true,
-      handler: 'fetchPaymentMethods'
-    }
-  },
-  methods: {
-    fetchPaymentMethods() {
-      if (this.workspace && !this.paymentMethod) {
-        this.$store.dispatch('fetchPaymentMethods')
-      }
     }
   },
   filters: {

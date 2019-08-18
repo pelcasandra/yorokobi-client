@@ -7,20 +7,42 @@
           v-for="plan in plans"
           :key="plan.name"
           :plan="plan"
-          :checked="subscription.plan === plan.name"
-          @input="setCheckedPlan"
+          :checked="form.plan === plan.name"
+          @input="selectPlan"
         ></PlanItem>
       </div>
       <stripe-loader>
         <div class="bg-white rounded shadow-md p-6">
           <div class="font-bold text-gray-700">Payment details</div>
-          <card
-            class="stripe-card my-6"
-            :class="{ complete }"
-            stripe="pk_test_cBWcHnD8btt5s78OJNviOeXw"
-            :options="stripeOptions"
-            @change="complete = $event.complete"
-          />
+          <div v-if="paymentMethod" class="flex my-5">
+            <div class="mr-4">
+              <input
+                type="radio"
+                name="use"
+                checked="checked"
+                :value="true"
+                v-model="isPreviouslyUsedMethod"
+              />
+            </div>
+            <payment-method :method="paymentMethod" />
+          </div>
+          <div class="flex my-6">
+            <div v-if="paymentMethod" class="mr-4">
+              <input
+                type="radio"
+                name="use"
+                :value="false"
+                v-model="isPreviouslyUsedMethod"
+              />
+            </div>
+            <card
+              class="stripe-card flex-grow"
+              :class="{ complete }"
+              stripe="pk_test_cBWcHnD8btt5s78OJNviOeXw"
+              :options="stripeOptions"
+              @change="isStripeFormComplete($event)"
+            />
+          </div>
           <div class="flex items-center mb-6 text-sm text-gray-700">
             <svg class="fill-current text-gray-500 h-4 w-4 mr-1">
               <use xlink:href="@/assets/images/icon-sprite.svg#lock" />
@@ -29,7 +51,7 @@
           </div>
           <button
             class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            @click="pay"
+            @click
             :disabled="!complete"
           >
             Pay with credit card
@@ -42,9 +64,11 @@
 </template>
 
 <script>
-import Workspace from '@/mixins/Workspace.js'
+import PaymentMethod from '@/components/PaymentMethod'
 import PlanItem from '@/components/PlanItem'
 import StripeLoader from '@/components/StripeLoader'
+import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
+import Workspace from '@/mixins/Workspace.js'
 import PlanService from '@/services/PlanService.js'
 import { normalize, schema } from 'normalizr'
 import { Card, createToken } from 'vue-stripe-elements-plus'
@@ -52,12 +76,17 @@ import { Card, createToken } from 'vue-stripe-elements-plus'
 const plan = new schema.Entity('plans', {}, { idAttribute: 'name' })
 
 export default {
-  components: { Card, PlanItem, StripeLoader },
+  components: { Card, PaymentMethod, PlanItem, StripeLoader },
   props: ['handle'],
-  mixins: [Workspace],
+  mixins: [Workspace, PaymentMethodMixin],
   data() {
     return {
       complete: false,
+      form: {
+        plan: null
+      },
+      isPreviouslyUsedMethod: false,
+      newStripeToken: null,
       plans: {},
       stripeOptions: {
         style: {
@@ -69,36 +98,58 @@ export default {
             fontSmoothing: 'antialiased'
           }
         }
-      },
-      subscription: {
-        plan: null
-      },
-      token: null
+      }
     }
   },
   watch: {
     workspace: {
       immediate: true,
-      handler: 'setCurrentPlanAsDefault'
+      handler: 'selectExistingPlan'
+    },
+    paymentMethodIsLoaded: {
+      immediate: true,
+      handler: 'selectPreviouslyUsedMethod'
+    }
+  },
+  computed: {
+    currentMethodToken() {
+      return this.isPreviouslyUsedMethod
+        ? this.paymentMethod.id
+        : this.newStripeToken
     }
   },
   mounted() {
-    PlanService.getPlans().then(({ data }) => {
-      const plans = normalize(data, { plans: [plan] })
-      this.plans = plans.entities.plans
-    })
+    this.getPlans()
   },
   methods: {
-    setCurrentPlanAsDefault() {
-      if (this.workspace) {
-        this.subscription.plan = this.workspace.plan
+    getPlans() {
+      PlanService.getPlans().then(({ data }) => {
+        const plans = normalize(data, { plans: [plan] })
+        this.plans = plans.entities.plans
+      })
+    },
+    selectPreviouslyUsedMethod() {
+      if (this.workspace && this.paymentMethod) {
+        this.isPreviouslyUsedMethod = true
       }
     },
-    setCheckedPlan(value) {
-      this.subscription.plan = value
+    isStripeFormComplete(event) {
+      if (event.complete) {
+        this.setStripeToken()
+      }
     },
-    pay() {
-      createToken().then(data => (this.token = data.token))
+    selectExistingPlan() {
+      if (this.workspace) {
+        this.form.plan = this.workspace.plan
+      }
+    },
+    selectPlan(value) {
+      this.form.plan = value
+    },
+    setStripeToken() {
+      createToken().then(data => {
+        this.newStripeToken = data.token.id
+      })
     }
   }
 }
