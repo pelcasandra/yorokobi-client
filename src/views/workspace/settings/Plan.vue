@@ -1,65 +1,75 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">Choose Plan</h1>
-    <div v-if="plans && workspace" class="lg:w-2/3 w-4/5">
-      <div class="bg-white rounded shadow-md mb-6">
-        <PlanItem
-          v-for="plan in plans"
-          :key="plan.name"
-          :plan="plan"
-          :checked="form.plan === plan.name"
-          @input="selectPlan"
-        ></PlanItem>
-      </div>
-      <stripe-loader>
-        <div class="bg-white rounded shadow-md p-6">
-          <div class="font-bold text-gray-700">Payment details</div>
-          <div v-if="paymentMethod" class="flex my-5">
-            <div class="mr-4">
-              <input
-                type="radio"
-                name="use"
-                checked="checked"
-                :value="true"
-                v-model="isPreviouslyUsedMethod"
-              />
-            </div>
-            <payment-method :method="paymentMethod" />
-          </div>
-          <div class="flex my-6">
-            <div v-if="paymentMethod" class="mr-4">
-              <input
-                type="radio"
-                name="use"
-                :value="false"
-                v-model="isPreviouslyUsedMethod"
-              />
-            </div>
-            <card
-              class="stripe-card flex-grow"
-              :class="{ complete }"
-              stripe="pk_test_cBWcHnD8btt5s78OJNviOeXw"
-              :options="stripeOptions"
-              @change="isStripeFormComplete($event)"
-            />
-          </div>
-          <div class="flex items-center mb-6 text-sm text-gray-700">
-            <svg class="fill-current text-gray-500 h-4 w-4 mr-1">
-              <use xlink:href="@/assets/images/icon-sprite.svg#lock" />
-            </svg>
-            <div class>Secured by Stripe.</div>
-          </div>
-          <button
-            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            @click
-            :disabled="!complete"
-          >
-            Pay with credit card
-          </button>
+    <form @submit.prevent="updatePlan" class="lg:w-2/3 w-4/5">
+      <div v-if="plans && workspace">
+        <div class="bg-white rounded shadow-md mb-6">
+          <PlanItem
+            v-for="plan in plans"
+            :key="plan.name"
+            :plan="plan"
+            :checked="form.plan === plan.name"
+            @input="selectPlan"
+          ></PlanItem>
         </div>
-      </stripe-loader>
-    </div>
-    <base-spinner v-else />
+        <stripe-loader>
+          <div class="bg-white rounded shadow-md p-6">
+            <div class="font-bold text-gray-700">Payment details</div>
+            <div v-if="paymentMethod" class="flex my-5">
+              <div class="mr-4">
+                <input
+                  type="radio"
+                  name="newMethod"
+                  checked="checked"
+                  :value="false"
+                  v-model="newMethod"
+                />
+              </div>
+              <payment-method :method="paymentMethod" />
+            </div>
+            <div class="flex my-6">
+              <div v-if="paymentMethod" class="mr-4">
+                <input
+                  type="radio"
+                  name="newMethod"
+                  :value="true"
+                  v-model="newMethod"
+                />
+              </div>
+              <card
+                class="stripe-card flex-grow"
+                :class="{ complete }"
+                stripe="pk_test_cBWcHnD8btt5s78OJNviOeXw"
+                :options="stripeOptions"
+                @change="setStripeTokenOnComplete($event)"
+              />
+            </div>
+            <div
+              class="text-sm mb-6 font-medium text-red-600"
+              v-if="
+                $v.form.newMethod.$dirty && !$v.form.newMethod.tokenRequired
+              "
+            >
+              <p>Please enter your credit card details.</p>
+            </div>
+            <div class="flex items-center mb-6 text-sm text-gray-700">
+              <svg class="fill-current text-gray-500 h-4 w-4 mr-1">
+                <use xlink:href="@/assets/images/icon-sprite.svg#lock" />
+              </svg>
+              <div class>Secured by Stripe.</div>
+            </div>
+            <button
+              type="submit"
+              name="button"
+              class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Pay with credit card
+            </button>
+          </div>
+        </stripe-loader>
+      </div>
+      <base-spinner v-else />
+    </form>
   </section>
 </template>
 
@@ -85,7 +95,7 @@ export default {
       form: {
         plan: null
       },
-      isPreviouslyUsedMethod: false,
+      newMethod: true,
       newStripeToken: null,
       plans: {},
       stripeOptions: {
@@ -113,9 +123,7 @@ export default {
   },
   computed: {
     currentMethodToken() {
-      return this.isPreviouslyUsedMethod
-        ? this.paymentMethod.id
-        : this.newStripeToken
+      return this.newMethod ? this.newStripeToken : this.paymentMethod.id
     }
   },
   mounted() {
@@ -128,16 +136,6 @@ export default {
         this.plans = plans.entities.plans
       })
     },
-    selectPreviouslyUsedMethod() {
-      if (this.workspace && this.paymentMethod) {
-        this.isPreviouslyUsedMethod = true
-      }
-    },
-    isStripeFormComplete(event) {
-      if (event.complete) {
-        this.setStripeToken()
-      }
-    },
     selectExistingPlan() {
       if (this.workspace) {
         this.form.plan = this.workspace.plan
@@ -146,10 +144,35 @@ export default {
     selectPlan(value) {
       this.form.plan = value
     },
+    selectPreviouslyUsedMethod() {
+      if (this.workspace && this.paymentMethod) {
+        this.newMethod = false
+      }
+    },
     setStripeToken() {
       createToken().then(data => {
         this.newStripeToken = data.token.id
       })
+    },
+    setStripeTokenOnComplete(event) {
+      if (event.complete) {
+        this.setStripeToken()
+      }
+    },
+    updatePlan() {
+      this.$v.form.$touch()
+      if (!this.$v.form.$invalid) {
+        console.log('submits form...')
+      }
+    }
+  },
+  validations: {
+    form: {
+      newMethod: {
+        tokenRequired() {
+          return (this.newMethod && !!this.newStripeToken) || !this.newMethod
+        }
+      }
     }
   }
 }
