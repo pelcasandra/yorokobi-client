@@ -1,6 +1,15 @@
 module.exports = {
   theme: {
-    fontSmoothing: true
+    fontSmoothing: true,
+    extend: {
+      backgroundColor: theme => ({
+        default: 'rgb(238, 243, 239)'
+      }),
+      colors: {
+        cornsilk: 'Cornsilk',
+        primary: 'SeaGreen'
+      }
+    }
   },
   plugins: [
     function({ addVariant, e }) {

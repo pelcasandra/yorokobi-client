@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import SubscriptionService from '@/services/SubscriptionService'
 import WorkspaceService from '@/services/WorkspaceService'
 import { normalize, schema } from 'normalizr'
 import find from 'lodash/find'
@@ -49,6 +50,11 @@ export default {
     },
     updateWorkspace({ commit }, workspace) {
       return WorkspaceService.putWorkspace(workspace).then(response => {
+        commit('SET_WORKSPACE', response.data)
+      })
+    },
+    updateWorkspaceSubscription({ commit }, workspace) {
+      return SubscriptionService.postSubscription(workspace).then(response => {
         commit('SET_WORKSPACE', response.data)
       })
     }

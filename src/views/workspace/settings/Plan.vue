@@ -1,7 +1,7 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">Choose Plan</h1>
-    <form @submit.prevent="updatePlan" class="lg:w-2/3 w-4/5">
+    <form @submit.prevent="updateSubscription" class="lg:w-2/3 w-4/5">
       <div v-if="plans && workspace">
         <div class="bg-white rounded shadow-md mb-6">
           <PlanItem
@@ -80,6 +80,7 @@ import StripeLoader from '@/components/StripeLoader'
 import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 import Workspace from '@/mixins/Workspace.js'
 import PlanService from '@/services/PlanService.js'
+
 import { normalize, schema } from 'normalizr'
 import { Card, createToken } from 'vue-stripe-elements-plus'
 
@@ -124,6 +125,13 @@ export default {
   computed: {
     currentMethodToken() {
       return this.newMethod ? this.newStripeToken : this.paymentMethod.id
+    },
+    dispatchableWorkspace() {
+      return {
+        id: this.workspace.id,
+        payment_method_token: this.currentMethodToken,
+        plan_name: this.form.plan
+      }
     }
   },
   mounted() {
@@ -159,10 +167,17 @@ export default {
         this.setStripeToken()
       }
     },
-    updatePlan() {
+    updateSubscription() {
       this.$v.form.$touch()
       if (!this.$v.form.$invalid) {
-        console.log('submits form...')
+        return this.$store
+          .dispatch('updateWorkspaceSubscription', this.dispatchableWorkspace)
+          .then(() => {
+            this.$router.push({
+              name: 'workspace_subscription_usage',
+              params: { handle: this.workspace.handle }
+            })
+          })
       }
     }
   },
