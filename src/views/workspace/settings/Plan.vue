@@ -29,12 +29,7 @@
             </div>
             <div class="flex my-6">
               <div v-if="paymentMethod" class="mr-4">
-                <input
-                  type="radio"
-                  name="newMethod"
-                  :value="true"
-                  v-model="newMethod"
-                />
+                <input type="radio" name="newMethod" :value="true" v-model="newMethod" />
               </div>
               <card
                 class="stripe-card flex-grow"
@@ -58,13 +53,7 @@
               </svg>
               <div class>Secured by Stripe.</div>
             </div>
-            <button
-              type="submit"
-              name="button"
-              class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Pay with credit card
-            </button>
+            <base-button :isLoading="state.isSending">Pay with credit card</base-button>
           </div>
         </stripe-loader>
       </div>
@@ -99,6 +88,9 @@ export default {
       newMethod: true,
       newStripeToken: null,
       plans: {},
+      state: {
+        isSending: false
+      },
       stripeOptions: {
         style: {
           base: {
@@ -132,6 +124,9 @@ export default {
         payment_method_token: this.currentMethodToken,
         plan_name: this.form.plan
       }
+    },
+    formIsValid() {
+      return !this.$v.form.$invalid
     }
   },
   mounted() {
@@ -169,7 +164,8 @@ export default {
     },
     updateSubscription() {
       this.$v.form.$touch()
-      if (!this.$v.form.$invalid) {
+      if (this.formIsValid) {
+        this.state.isSending = true
         return this.$store
           .dispatch('updateWorkspaceSubscription', this.dispatchableWorkspace)
           .then(() => {
@@ -177,6 +173,10 @@ export default {
               name: 'workspace_subscription_usage',
               params: { handle: this.workspace.handle }
             })
+          })
+          .catch(error => {
+            this.state.isSending = false
+            console.log(error)
           })
       }
     }
