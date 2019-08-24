@@ -1,5 +1,5 @@
 <template>
-  <clip-loader :color="color" :size="size" :style="style"></clip-loader>
+  <clip-loader :color="color" :size="size"></clip-loader>
 </template>
 
 <script>
@@ -15,10 +15,6 @@ export default {
     size: {
       type: String,
       default: '35px'
-    },
-    style: {
-      type: String,
-      default: ''
     }
   }
 }

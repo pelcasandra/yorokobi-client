@@ -8,10 +8,17 @@ module.exports = {
       colors: {
         cornsilk: 'Cornsilk',
         primary: 'SeaGreen'
+      },
+      minWidth: {
+        '16': '4rem'
+      },
+      transitionProperty: {
+        'max-width': 'max-width'
       }
     }
   },
   plugins: [
+    require('tailwindcss-transitions')(),
     function({ addVariant, e }) {
       addVariant('first-child', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
