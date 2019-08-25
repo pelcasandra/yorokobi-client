@@ -2,15 +2,18 @@
   <button
     type="submit"
     name="button"
-    class="text-white h-10 font-bold px-4 rounded content-center flex justify-center transition-max-width"
+    class="text-white font-bold px-4 py-2 rounded content-center inline-flex justify-center transition-max-width"
     :class="
-      isLoading
+      loading
         ? 'bg-indigo-400 cursor-auto'
         : 'bg-indigo-500 hover:bg-indigo-700 focus:shadow-outline focus:outline-none '
     "
-    :disabled="isLoading"
+    :disabled="loading"
   >
-    <div v-if="isLoading" class="flex-shrink-0 flex min-w-16 content-center justify-center">
+    <div
+      v-if="loading"
+      class="flex-shrink-0 flex min-w-16 content-center justify-center"
+    >
       <div class="mr-3" v-if="loadingText != ''">{{ loadingText }}</div>
       <base-spinner size="22px" color="white" class="flex" />
     </div>
@@ -28,7 +31,7 @@ export default {
   mixins: [smoothReflow],
   props: {
     loadingText: { type: String, default: 'Processing...' },
-    isLoading: { type: Boolean, default: false }
+    loading: { type: Boolean, default: false }
   },
   mounted() {
     this.$smoothReflow({

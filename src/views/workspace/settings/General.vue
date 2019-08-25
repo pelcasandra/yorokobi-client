@@ -34,13 +34,9 @@
           </base-input-group>
         </form-group>
         <div class="p-6 block">
-          <button
-            type="submit"
-            name="button"
-            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64"
+          <base-button class="w-64" :loading="state.waitingRemoteResponse"
+            >Save Changes</base-button
           >
-            Save Changes
-          </button>
         </div>
       </form>
     </form-wrapper>

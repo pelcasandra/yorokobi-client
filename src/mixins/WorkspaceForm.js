@@ -18,6 +18,9 @@ export default {
           'Your handle name should contain only letters, numbers and hyphens (-).',
         taken:
           'The handle you chosen is already taken. Please choose another one.'
+      },
+      state: {
+        waitingRemoteResponse: false
       }
     }
   },
@@ -62,6 +65,7 @@ export default {
     dispatchWorkspace(action) {
       this.$v.form.$touch()
       if (!this.$v.form.$invalid) {
+        this.state.waitingRemoteResponse = true
         this.$store
           .dispatch(action, this.form)
           .then(() =>
@@ -71,6 +75,7 @@ export default {
             })
           )
           .catch(error => {
+            this.state.waitingRemoteResponse = false
             if (error.response && error.response.status == 422) {
               this.requestErrors = error.response.data.errors
             }

@@ -3,7 +3,11 @@
     <template v-slot:header>
       <h1 class="text-2xl mb-6 font-medium">Sign In</h1>
     </template>
-    <form-wrapper :validator="$v.user" :messages="validationMessages" class="w-full max-w-xs">
+    <form-wrapper
+      :validator="$v.user"
+      :messages="validationMessages"
+      class="w-full max-w-xs"
+    >
       <form
         @submit.prevent="login"
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
@@ -31,12 +35,9 @@
             :validation="$v.user.password"
           />
         </form-group>
-
-        <button
-          type="submit"
-          name="button"
-          class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-        >Login</button>
+        <base-button class="w-full" :loading="state.waitingRemoteResponse"
+          >Login</base-button
+        >
       </form>
     </form-wrapper>
     <template v-slot:footer>
@@ -66,6 +67,9 @@ export default {
         email: null,
         password: null
       },
+      state: {
+        waitingRemoteResponse: false
+      },
       validationMessages: {}
     }
   },
@@ -86,6 +90,7 @@ export default {
     login() {
       this.$v.user.$touch()
       if (!this.$v.user.$invalid) {
+        this.state.waitingRemoteResponse = true
         this.$store
           .dispatch('login', {
             user: this.user
@@ -94,6 +99,7 @@ export default {
             this.$router.push({ name: 'workspaces' })
           })
           .catch(error => {
+            this.state.waitingRemoteResponse = false
             if (has(error, 'response.data.errors')) {
               this.remoteErrors = error.response.data.errors
             }

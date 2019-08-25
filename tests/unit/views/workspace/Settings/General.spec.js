@@ -56,9 +56,10 @@ describe('General.vue', () => {
         }
       },
       stubs: {
-        FormGroup: '<div />',
+        BaseButton: '<div />',
         BaseInput: '<div />',
-        BaseInputGroup: '<div />'
+        BaseInputGroup: '<div />',
+        FormGroup: '<div />'
       }
     })
   })

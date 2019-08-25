@@ -26,9 +26,10 @@ describe('NewWorkspace.vue', () => {
     wrapper = shallowMount(NewWorkspace, {
       store,
       stubs: {
-        FormGroup: '<div />',
+        BaseButton: '<div />',
         BaseInput: '<div />',
-        BaseInputGroup: '<div />'
+        BaseInputGroup: '<div />',
+        FormGroup: '<div />'
       }
     })
   })

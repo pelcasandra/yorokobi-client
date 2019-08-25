@@ -53,7 +53,7 @@
               </svg>
               <div class>Secured by Stripe.</div>
             </div>
-            <base-button :isLoading="state.isSending">Pay with credit card</base-button>
+            <base-button :loading="state.isSending">Pay with credit card</base-button>
           </div>
         </stripe-loader>
       </div>

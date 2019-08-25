@@ -27,6 +27,7 @@ describe('Sign.vue', () => {
       store,
       router,
       stubs: {
+        BaseButton: '<div />',
         BaseInput: '<div />',
         BaseInputGroup: '<div />'
       }

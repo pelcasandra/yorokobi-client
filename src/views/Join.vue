@@ -54,13 +54,9 @@
             :validation="$v.user.password_confirmation"
           />
         </form-group>
-        <button
-          type="submit"
-          name="button"
-          class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        <base-button class="w-full" :loading="state.waitingRemoteResponse"
+          >Register</base-button
         >
-          Register
-        </button>
         <p class="mt-6 text-sm">
           I agree to the Yorokobi Terms of Use and Privacy Policy.
         </p>
@@ -95,6 +91,9 @@ export default {
         password: null,
         password_confirmation: null
       },
+      state: {
+        waitingRemoteResponse: false
+      },
       validationMessages: {
         required: 'Please enter your {attribute}.'
       }
@@ -119,12 +118,14 @@ export default {
     register() {
       this.$v.user.$touch()
       if (!this.$v.user.$invalid) {
+        this.state.waitingRemoteResponse = true
         this.$store
           .dispatch('register', { user: this.user })
           .then(() => {
             this.$router.push({ name: 'workspaces' })
           })
           .catch(error => {
+            this.state.waitingRemoteResponse = false
             if (has(error, 'response.data.errors')) {
               this.remoteErrors = error.response.data.errors
             }

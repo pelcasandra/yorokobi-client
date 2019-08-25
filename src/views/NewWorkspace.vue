@@ -36,13 +36,11 @@
           </base-input-group>
         </form-group>
         <div class="p-6 block text-center">
-          <button
-            type="submit"
-            name="button"
-            class="bg-indigo-500 text-lg hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64"
+          <base-button
+            class="text-lg w-64"
+            :loading="state.waitingRemoteResponse"
+            >Create new workspace</base-button
           >
-            Create new workspace
-          </button>
           <span class="mx-3 text-gray-600">or</span>
           <router-link
             :to="{ name: 'workspaces' }"
