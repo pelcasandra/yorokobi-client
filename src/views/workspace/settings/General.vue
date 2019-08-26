@@ -1,6 +1,11 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">General Settings</h1>
+    <form-request-errors
+      v-if="!$v.form.$invalid"
+      :errors="requestErrors"
+      class="lg:w-2/3 w-4/5"
+    />
     <form-wrapper
       :validator="$v.form"
       :messages="localMessages"

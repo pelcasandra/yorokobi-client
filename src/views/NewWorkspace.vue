@@ -3,13 +3,18 @@
     <h1 class="text-3xl font-bold mb-8 text-center text-gray-900">
       Create a new Workspace
     </h1>
+    <form-request-errors v-if="!$v.form.$invalid" :errors="requestErrors" />
     <form-wrapper
       :validator="$v.form"
       :messages="localMessages"
       class="bg-white shadow-md rounded mb-4"
     >
       <form @submit.prevent="createWorkspace">
-        <form-group name="name" label="Workspace Name" class="p-6 border-b-2">
+        <form-group
+          name="name"
+          label="Workspace Name"
+          class="p-6 border-b-2 border-b-gray"
+        >
           <base-input
             name="name"
             v-model.trim="form.name"

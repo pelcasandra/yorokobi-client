@@ -5,9 +5,15 @@
       <p class="mb-6 mt-2">It takes a minute a join.</p>
     </template>
     <form-wrapper :validator="$v.user" :messages="validationMessages">
+      <form-request-errors
+        v-if="!$v.user.$invalid"
+        :errors="requestErrors"
+        class="rounded-b-none"
+      />
       <form
         @submit.prevent="register"
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
+        :class="{ 'rounded-t-none': anyErrors }"
       >
         <form-group
           name="full_name"
@@ -91,26 +97,9 @@ export default {
         password: null,
         password_confirmation: null
       },
-      state: {
-        waitingRemoteResponse: false
-      },
       validationMessages: {
+        taken: 'This email is already in use.',
         required: 'Please enter your {attribute}.'
-      }
-    }
-  },
-  computed: {
-    validations() {
-      return {
-        user: {
-          email: { required, email },
-          full_name: { required },
-          password: { newRequired: required, minLength: minLength(6) },
-          password_confirmation: {
-            sameAsPassword: sameAs('password'),
-            minLength: minLength(6)
-          }
-        }
       }
     }
   },
@@ -127,9 +116,26 @@ export default {
           .catch(error => {
             this.state.waitingRemoteResponse = false
             if (has(error, 'response.data.errors')) {
-              this.remoteErrors = error.response.data.errors
+              this.requestErrors = error.response.data.errors
             }
           })
+      }
+    }
+  },
+  validations: {
+    user: {
+      email: {
+        required,
+        email,
+        taken() {
+          return !this.hasRequestErrors('email', 'taken')
+        }
+      },
+      full_name: { required },
+      password: { newRequired: required, minLength: minLength(6) },
+      password_confirmation: {
+        sameAsPassword: sameAs('password'),
+        minLength: minLength(6)
       }
     }
   }

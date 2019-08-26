@@ -10,6 +10,7 @@ import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
 import VueMeta from 'vue-meta'
 import FormGroup from '@/components/FormGroup'
+import FormErrors from '@/components/FormErrors'
 import vuelidateErrorExtractor, { templates } from 'vuelidate-error-extractor'
 
 import '@/assets/css/tailwind.css'

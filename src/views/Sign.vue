@@ -8,15 +8,13 @@
       :messages="validationMessages"
       class="w-full max-w-xs"
     >
+      <form-request-errors :errors="requestErrors" class="rounded-b-none" />
       <form
         @submit.prevent="login"
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
+        :class="{ 'rounded-t-none': anyErrors }"
         :validator="$v.user"
       >
-        <template v-if="$v.form">
-          <form-group :validator="$v.form" class="mb-5"></form-group>
-        </template>
-
         <form-group name="email" label="Email" class="mb-5">
           <base-input
             v-model.trim="user.email"
@@ -50,9 +48,9 @@
 </template>
 
 <script>
-import { required, email, minLength } from 'vuelidate/lib/validators'
 import SignForm from '@/components/SignForm'
 import RemoteValidation from '@/mixins/RemoteValidation'
+import { required, email, minLength } from 'vuelidate/lib/validators'
 import has from 'lodash/has'
 
 export default {
@@ -67,22 +65,8 @@ export default {
         email: null,
         password: null
       },
-      state: {
-        waitingRemoteResponse: false
-      },
-      validationMessages: {}
-    }
-  },
-  computed: {
-    validations() {
-      return {
-        user: {
-          email: {
-            email,
-            required
-          },
-          password: { required, minLength: minLength(6) }
-        }
+      validationMessages: {
+        unauthorized: 'Invalid credentials'
       }
     }
   },
@@ -101,10 +85,19 @@ export default {
           .catch(error => {
             this.state.waitingRemoteResponse = false
             if (has(error, 'response.data.errors')) {
-              this.remoteErrors = error.response.data.errors
+              this.requestErrors = error.response.data.errors
             }
           })
       }
+    }
+  },
+  validations: {
+    user: {
+      email: {
+        email,
+        required
+      },
+      password: { required, minLength: minLength(6) }
     }
   }
 }

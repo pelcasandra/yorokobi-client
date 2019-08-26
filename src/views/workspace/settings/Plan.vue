@@ -1,64 +1,78 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">Choose Plan</h1>
-    <form @submit.prevent="updateSubscription" class="lg:w-2/3 w-4/5">
-      <div v-if="plans && workspace">
-        <div class="bg-white rounded shadow-md mb-6">
-          <PlanItem
-            v-for="plan in plans"
-            :key="plan.name"
-            :plan="plan"
-            :checked="form.plan === plan.name"
-            @input="selectPlan"
-          ></PlanItem>
-        </div>
-        <stripe-loader>
-          <div class="bg-white rounded shadow-md p-6">
-            <div class="font-bold text-gray-700">Payment details</div>
-            <div v-if="paymentMethod" class="flex my-5">
-              <div class="mr-4">
-                <input
-                  type="radio"
-                  name="newMethod"
-                  checked="checked"
-                  :value="false"
-                  v-model="newMethod"
+    <form-wrapper
+      :validator="$v.form"
+      class="lg:w-2/3 w-4/5"
+      :messages="validationMessages"
+    >
+      <form @submit.prevent="updateSubscription">
+        <template v-if="plans && workspace">
+          <form-request-errors :errors="requestErrors" class="mb-6" />
+          <div class="bg-white rounded shadow-md mb-6">
+            <PlanItem
+              v-for="plan in plans"
+              :key="plan.name"
+              :plan="plan"
+              :checked="form.plan === plan.name"
+              @input="selectPlan"
+            ></PlanItem>
+          </div>
+          <stripe-loader>
+            <div class="bg-white rounded shadow-md p-6 mb-6">
+              <div class="font-bold text-gray-700">Payment details</div>
+              <div v-if="paymentMethod" class="flex my-5">
+                <div class="mr-4">
+                  <input
+                    type="radio"
+                    name="newMethod"
+                    checked="checked"
+                    :value="false"
+                    v-model="newMethod"
+                  />
+                </div>
+                <payment-method :method="paymentMethod" />
+              </div>
+              <div class="flex my-6">
+                <div v-if="paymentMethod" class="mr-4">
+                  <input
+                    type="radio"
+                    name="newMethod"
+                    :value="true"
+                    v-model="newMethod"
+                  />
+                </div>
+                <card
+                  class="stripe-card flex-grow"
+                  :class="{ complete }"
+                  stripe="pk_test_cBWcHnD8btt5s78OJNviOeXw"
+                  :options="stripeOptions"
+                  @change="setStripeTokenOnComplete($event)"
                 />
               </div>
-              <payment-method :method="paymentMethod" />
-            </div>
-            <div class="flex my-6">
-              <div v-if="paymentMethod" class="mr-4">
-                <input type="radio" name="newMethod" :value="true" v-model="newMethod" />
+              <div
+                class="text-sm mb-6 font-medium text-red-600"
+                v-if="
+                  $v.form.newMethod.$dirty && !$v.form.newMethod.tokenRequired
+                "
+              >
+                <p>Please enter your credit card details.</p>
               </div>
-              <card
-                class="stripe-card flex-grow"
-                :class="{ complete }"
-                stripe="pk_test_cBWcHnD8btt5s78OJNviOeXw"
-                :options="stripeOptions"
-                @change="setStripeTokenOnComplete($event)"
-              />
+              <div class="flex items-center mb-6 text-sm text-gray-700">
+                <svg class="fill-current text-gray-500 h-4 w-4 mr-1">
+                  <use xlink:href="@/assets/images/icon-sprite.svg#lock" />
+                </svg>
+                <div class>Secured by Stripe.</div>
+              </div>
+              <base-button :loading="state.waitingRemoteResponse"
+                >Pay with credit card</base-button
+              >
             </div>
-            <div
-              class="text-sm mb-6 font-medium text-red-600"
-              v-if="
-                $v.form.newMethod.$dirty && !$v.form.newMethod.tokenRequired
-              "
-            >
-              <p>Please enter your credit card details.</p>
-            </div>
-            <div class="flex items-center mb-6 text-sm text-gray-700">
-              <svg class="fill-current text-gray-500 h-4 w-4 mr-1">
-                <use xlink:href="@/assets/images/icon-sprite.svg#lock" />
-              </svg>
-              <div class>Secured by Stripe.</div>
-            </div>
-            <base-button :loading="state.isSending">Pay with credit card</base-button>
-          </div>
-        </stripe-loader>
-      </div>
-      <base-spinner v-else />
-    </form>
+          </stripe-loader>
+        </template>
+        <base-spinner v-else />
+      </form>
+    </form-wrapper>
   </section>
 </template>
 
@@ -67,8 +81,10 @@ import PaymentMethod from '@/components/PaymentMethod'
 import PlanItem from '@/components/PlanItem'
 import StripeLoader from '@/components/StripeLoader'
 import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
+import RemoteValidation from '@/mixins/RemoteValidation'
 import Workspace from '@/mixins/Workspace.js'
 import PlanService from '@/services/PlanService.js'
+import has from 'lodash/has'
 
 import { normalize, schema } from 'normalizr'
 import { Card, createToken } from 'vue-stripe-elements-plus'
@@ -76,9 +92,14 @@ import { Card, createToken } from 'vue-stripe-elements-plus'
 const plan = new schema.Entity('plans', {}, { idAttribute: 'name' })
 
 export default {
-  components: { Card, PaymentMethod, PlanItem, StripeLoader },
+  components: {
+    Card,
+    PaymentMethod,
+    PlanItem,
+    StripeLoader
+  },
   props: ['handle'],
-  mixins: [Workspace, PaymentMethodMixin],
+  mixins: [PaymentMethodMixin, RemoteValidation, Workspace],
   data() {
     return {
       complete: false,
@@ -88,9 +109,6 @@ export default {
       newMethod: true,
       newStripeToken: null,
       plans: {},
-      state: {
-        isSending: false
-      },
       stripeOptions: {
         style: {
           base: {
@@ -101,6 +119,9 @@ export default {
             fontSmoothing: 'antialiased'
           }
         }
+      },
+      validationMessages: {
+        tokenRequired: 'Please enter your credit card details.'
       }
     }
   },
@@ -122,7 +143,7 @@ export default {
       return {
         id: this.workspace.id,
         payment_method_token: this.currentMethodToken,
-        plan_name: this.form.plan
+        plan_name: this.form.plan + '1'
       }
     },
     formIsValid() {
@@ -165,7 +186,7 @@ export default {
     updateSubscription() {
       this.$v.form.$touch()
       if (this.formIsValid) {
-        this.state.isSending = true
+        this.state.waitingRemoteResponse = true
         return this.$store
           .dispatch('updateWorkspaceSubscription', this.dispatchableWorkspace)
           .then(() => {
@@ -175,8 +196,10 @@ export default {
             })
           })
           .catch(error => {
-            this.state.isSending = false
-            console.log(error)
+            this.state.waitingRemoteResponse = false
+            if (has(error, 'response.data.errors')) {
+              this.requestErrors = error.response.data.errors
+            }
           })
       }
     }

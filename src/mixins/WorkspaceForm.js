@@ -1,10 +1,11 @@
+import RemoteValidation from '@/mixins/RemoteValidation'
 import { required } from 'vuelidate/lib/validators'
 
 export default {
+  mixins: [RemoteValidation],
   data() {
     return {
       automaticHandle: true,
-      requestErrors: [],
       form: {
         id: null,
         handle: null,
@@ -50,17 +51,6 @@ export default {
       if (parameterized_name) {
         return parameterized_name.join('')
       }
-    },
-    hasRequestErrors(attribute, code = null) {
-      let errors = this._.filter(this.requestErrors, {
-        field: attribute
-      })
-
-      if (code) {
-        errors = this._.filter(errors, { code: code })
-      }
-
-      return !!errors.length
     },
     dispatchWorkspace(action) {
       this.$v.form.$touch()
