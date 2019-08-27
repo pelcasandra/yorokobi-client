@@ -89,6 +89,7 @@ import StripeLoader from '@/components/StripeLoader'
 import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 import RemoteValidation from '@/mixins/RemoteValidation'
 import PlanService from '@/services/PlanService.js'
+import capitalize from 'lodash/capitalize'
 import has from 'lodash/has'
 
 import { normalize, schema } from 'normalizr'
@@ -200,7 +201,15 @@ export default {
           .then(() => {
             this.$router.push({
               name: 'workspace_subscription_usage',
-              params: { handle: this.workspace.handle }
+              params: {
+                handle: this.workspace.handle,
+                successMessage:
+                  'You successfully upgraded to ' +
+                  (this.workspace.plan === 'enterprise' ? 'an' : 'a') +
+                  ' <strong>' +
+                  capitalize(this.workspace.plan) +
+                  '</strong> plan.<br />Thanks for your support and trust in Yorokobi.'
+              }
             })
           })
           .catch(error => {

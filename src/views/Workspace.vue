@@ -11,7 +11,7 @@ import NotFound from '@/views/errors/NotFound'
 
 export default {
   components: { Nav },
-  props: ['handle'],
+  props: ['handle', 'successMessage'],
   created() {
     if (!this.$store.getters.getWorkspaceByHandle(this.handle)) {
       this.$store

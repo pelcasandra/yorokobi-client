@@ -1,6 +1,7 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">Usage & Plan</h1>
+    <alert-success :message="successMessage" class="lg:w-2/3 w-4/5" />
     <div v-if="workspace && paymentMethodIsLoaded" class="lg:w-2/3 w-4/5">
       <div class="bg-white shadow-md rounded mb-4 p-6 text-gray-700">
         <div class="flex w-full justify-between items-end">
@@ -56,13 +57,14 @@
 <script>
 import capitalize from 'lodash/capitalize'
 import filesize from 'filesize'
+import AlertSuccess from '@/components/AlertSuccess'
 import PaymentMethod from '@/components/PaymentMethod'
 import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 
 export default {
-  components: { PaymentMethod },
+  components: { AlertSuccess, PaymentMethod },
   name: 'Usage',
-  props: ['workspace'],
+  props: ['successMessage', 'workspace'],
   mixins: [PaymentMethodMixin],
   computed: {
     currentUsagePercentage() {
