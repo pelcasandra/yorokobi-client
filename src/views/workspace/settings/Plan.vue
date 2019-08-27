@@ -148,7 +148,7 @@ export default {
       return {
         id: this.workspace.id,
         payment_method_token: this.currentMethodToken,
-        plan_name: this.form.plan + '1'
+        plan_name: this.form.plan
       }
     },
     formIsValid() {
