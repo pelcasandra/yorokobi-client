@@ -3,7 +3,7 @@
     <h1 class="text-3xl font-bold mb-8 text-center text-gray-900">
       Create a new Workspace
     </h1>
-    <form-request-errors v-if="!$v.form.$invalid" :errors="requestErrors" />
+    <form-request-errors :validator="$v.form" :errors="requestErrors" />
     <form-wrapper
       :validator="$v.form"
       :messages="localMessages"

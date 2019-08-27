@@ -9,8 +9,8 @@ import VueTimeago from 'vue-timeago'
 import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
 import VueMeta from 'vue-meta'
+import VueScrollTo from 'vue-scrollto'
 import FormGroup from '@/components/FormGroup'
-import FormErrors from '@/components/FormErrors'
 import vuelidateErrorExtractor, { templates } from 'vuelidate-error-extractor'
 
 import '@/assets/css/tailwind.css'
@@ -26,6 +26,7 @@ Vue.use(VueTimeago, {
 
 Vue.use(Vuelidate)
 Vue.use(VueLodash)
+Vue.use(VueScrollTo)
 
 Vue.use(VueMeta, {
   // refreshOnceOnNavigation: true

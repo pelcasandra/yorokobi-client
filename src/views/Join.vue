@@ -13,7 +13,7 @@
       <form
         @submit.prevent="register"
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
-        :class="{ 'rounded-t-none': anyErrors }"
+        :class="{ 'rounded-t-none': anyError }"
       >
         <form-group
           name="full_name"

@@ -11,12 +11,29 @@ export default {
       }
     }
   },
+  watch: {
+    requestErrors: 'scrollToError'
+  },
   computed: {
-    anyErrors() {
-      return this.requestErrors.length
+    anyError() {
+      return !!this.requestErrors.length
+    },
+    localValidator() {
+      return this.$v
+    },
+    noLocalValidator() {
+      return !this.localValidator
+    },
+    validLocally() {
+      return !!this.$v && !this.$v.$invalid
     }
   },
   methods: {
+    scrollToError() {
+      if (this.validLocally || this.noLocalValidator) {
+        this.$scrollTo('body')
+      }
+    },
     hasRequestErrors(attribute, code = null) {
       let errors = filter(this.requestErrors, {
         field: attribute

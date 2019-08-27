@@ -8,7 +8,11 @@
     >
       <form @submit.prevent="updateSubscription">
         <template v-if="plans && workspace">
-          <form-request-errors :errors="requestErrors" class="mb-6" />
+          <form-request-errors
+            :errors="requestErrors"
+            :validator="$v.form"
+            class="mb-6"
+          />
           <div class="bg-white rounded shadow-md mb-6">
             <PlanItem
               v-for="plan in plans"
@@ -183,6 +187,7 @@ export default {
         this.setStripeToken()
       }
     },
+
     updateSubscription() {
       this.$v.form.$touch()
       if (this.formIsValid) {

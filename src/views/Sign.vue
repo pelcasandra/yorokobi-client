@@ -8,11 +8,15 @@
       :messages="validationMessages"
       class="w-full max-w-xs"
     >
-      <form-request-errors :errors="requestErrors" class="rounded-b-none" />
+      <form-request-errors
+        :validator="$v.user"
+        :errors="requestErrors"
+        class="rounded-b-none"
+      />
       <form
         @submit.prevent="login"
         class="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
-        :class="{ 'rounded-t-none': anyErrors }"
+        :class="{ 'rounded-t-none': anyError }"
         :validator="$v.user"
       >
         <form-group name="email" label="Email" class="mb-5">

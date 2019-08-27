@@ -25,6 +25,7 @@
     "vue-lodash": "^2.0.2",
     "vue-meta": "^2.2.1",
     "vue-router": "^3.0.3",
+    "vue-scrollto": "^2.15.0",
     "vue-smooth-reflow": "^0.1.12",
     "vue-spinner": "^1.0.3",
     "vue-stripe-elements-plus": "^0.2.10",

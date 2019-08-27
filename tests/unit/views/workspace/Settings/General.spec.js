@@ -4,6 +4,7 @@ import Vuelidate from 'vuelidate'
 import VueLodash from 'vue-lodash'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
+import VueScrollTo from 'vue-scrollto'
 import General from '@/views/workspace/Settings/General'
 import { templates } from 'vuelidate-error-extractor'
 
@@ -11,6 +12,7 @@ Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(Vuelidate)
 Vue.use(VueLodash)
+Vue.use(VueScrollTo)
 Vue.component('FormWrapper', templates.FormWrapper)
 
 describe('General.vue', () => {
