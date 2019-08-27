@@ -4,11 +4,11 @@
     name="button"
     class="text-white font-bold px-4 py-2 rounded content-center inline-flex justify-center transition-max-width"
     :class="
-      loading
+      loading || disabled
         ? 'bg-indigo-400 cursor-auto'
         : 'bg-indigo-500 hover:bg-indigo-700 focus:shadow-outline focus:outline-none '
     "
-    :disabled="loading"
+    :disabled="disabled || loading"
   >
     <div
       v-if="loading"
@@ -30,6 +30,7 @@ export default {
   name: 'BaseButton',
   mixins: [smoothReflow],
   props: {
+    disabled: { type: Boolean, default: false },
     loadingText: { type: String, default: 'Processing...' },
     loading: { type: Boolean, default: false }
   },

@@ -68,7 +68,9 @@
                 </svg>
                 <div class>Secured by Stripe.</div>
               </div>
-              <base-button :loading="state.waitingRemoteResponse"
+              <base-button
+                :loading="state.waitingRemoteResponse"
+                :disabled="noPlanSelected"
                 >Pay with credit card</base-button
               >
             </div>
@@ -86,7 +88,6 @@ import PlanItem from '@/components/PlanItem'
 import StripeLoader from '@/components/StripeLoader'
 import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 import RemoteValidation from '@/mixins/RemoteValidation'
-import Workspace from '@/mixins/Workspace.js'
 import PlanService from '@/services/PlanService.js'
 import has from 'lodash/has'
 
@@ -102,8 +103,8 @@ export default {
     PlanItem,
     StripeLoader
   },
-  props: ['handle'],
-  mixins: [PaymentMethodMixin, RemoteValidation, Workspace],
+  props: ['workspace'],
+  mixins: [PaymentMethodMixin, RemoteValidation],
   data() {
     return {
       complete: false,
@@ -152,6 +153,9 @@ export default {
     },
     formIsValid() {
       return !this.$v.form.$invalid
+    },
+    noPlanSelected() {
+      return this.form.plan === this.workspace.plan
     }
   },
   mounted() {
@@ -187,7 +191,6 @@ export default {
         this.setStripeToken()
       }
     },
-
     updateSubscription() {
       this.$v.form.$touch()
       if (this.formIsValid) {

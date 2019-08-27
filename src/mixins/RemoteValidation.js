@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     scrollToError() {
-      if (this.validLocally || this.noLocalValidator) {
+      if (this.validaLocally || this.noLocalValidator) {
         this.$scrollTo('body')
       }
     },
