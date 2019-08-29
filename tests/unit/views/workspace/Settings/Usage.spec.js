@@ -3,6 +3,8 @@ import Vue from 'vue'
 import Usage from '@/views/workspace/Settings/Usage'
 import VueRouter from 'vue-router'
 
+import { def } from 'bdd-lazy-var/global'
+
 Vue.use(VueRouter)
 
 describe('Usage.vue', () => {
@@ -15,34 +17,37 @@ describe('Usage.vue', () => {
     quota_used: 0,
     quota_total: 10737418240
   }
-  const paymentMethod = {
-    id: '1',
-    card: {
-      brand: 'Visa',
-      last4: '3237',
-      expiration_month: '2',
-      expiration_year: '2023'
-    },
-    workspace_id: '1'
-  }
+
   let wrapper
 
-  describe('With Payment method', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(Usage, {
-        propsData: { workspace },
-        computed: {
-          paymentMethod() {
-            return paymentMethod
-          },
-          paymentMethodIsLoaded() {
-            return true
-          }
+  beforeEach(() => {
+    wrapper = shallowMount(Usage, {
+      propsData: { workspace },
+      computed: {
+        paymentMethod() {
+          return $paymentMethod
+        },
+        paymentMethodIsLoaded() {
+          return true
         }
-      })
+      },
+      methods: { fetchPaymentMethods: jest.fn() }
     })
+  })
 
-    it('shows available quota legend', () => {
+  describe('with payment method', () => {
+    def('paymentMethod', () => ({
+      id: '1',
+      card: {
+        brand: 'Visa',
+        last4: '3237',
+        expiration_month: '2',
+        expiration_year: '2023'
+      },
+      workspace_id: '1'
+    }))
+
+    it('in-use and total storage quota', () => {
       expect(
         wrapper
           .html()
@@ -51,7 +56,7 @@ describe('Usage.vue', () => {
       ).toBe(true)
     })
 
-    it('current plan retention period in days', () => {
+    it('retention period in days', () => {
       expect(
         wrapper
           .text()
@@ -65,21 +70,10 @@ describe('Usage.vue', () => {
     })
   })
 
-  describe('Without Payment method', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(Usage, {
-        propsData: { workspace },
-        computed: {
-          paymentMethod: jest.fn(),
-          paymentMethodIsLoaded: jest.fn().mockReturnValue(true)
-        },
-        methods: {
-          fetchPaymentMethods: jest.fn()
-        }
-      })
-    })
+  describe('without payment method', () => {
+    def('paymentMethod', () => null)
 
-    it('hide link to edit payment info', () => {
+    it('hide link to change payment method', () => {
       expect(wrapper.text().includes('Change Payment method')).toBe(false)
     })
   })

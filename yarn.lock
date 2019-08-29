@@ -2271,6 +2271,11 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bdd-lazy-var@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/bdd-lazy-var/-/bdd-lazy-var-2.5.2.tgz#ee4d0dd84bceb8e9ce6a5881d7804d99c57feb38"
+  integrity sha512-EBFk8uOTALu8crLChd+KfhHwv+frhxqE235jcy6NY1G1weB0Gyr5H7u0zvUnr1yduzX6M1I/ERaVGdY1cd+6ZQ==
+
 bezier-easing@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/bezier-easing/-/bezier-easing-2.1.0.tgz#c04dfe8b926d6ecaca1813d69ff179b7c2025d86"
