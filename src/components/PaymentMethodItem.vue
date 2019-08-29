@@ -16,6 +16,10 @@
     </svg>
     <div>{{ method.card.brand }}</div>
     <div class="ml-3">•••• •••• •••• {{ method.card.last4 }}</div>
+    <div class="ml-3">
+      Exp.
+      {{ method.card.expiration_month }}/{{ method.card.expiration_year }}
+    </div>
   </div>
 </template>
 

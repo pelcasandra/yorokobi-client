@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import find from 'lodash/find'
 import { normalize, schema } from 'normalizr'
 import PaymentMethodService from '@/services/PaymentMethodService'
@@ -12,6 +13,10 @@ export default {
   },
 
   mutations: {
+    SET_PAYMENT_METHOD(state, payment_method) {
+      Vue.set(state.payment_methods, payment_method.id, payment_method)
+      state.isLoading = false
+    },
     SET_PAYMENT_METHODS(state, data) {
       state.payment_methods = data.entities.payment_methods
       state.alreadyFetched = true
@@ -27,6 +32,13 @@ export default {
         })
         commit('SET_PAYMENT_METHODS', payment_methods)
       })
+    },
+    updatePaymentMethod({ commit }, payment_method) {
+      return PaymentMethodService.postPaymentMethod(payment_method).then(
+        response => {
+          commit('SET_PAYMENT_METHOD', response.data)
+        }
+      )
     }
   },
 

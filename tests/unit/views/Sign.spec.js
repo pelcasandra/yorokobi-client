@@ -20,6 +20,7 @@ describe('Sign.vue', () => {
   let actions
 
   beforeEach(() => {
+    window.scrollTo = jest.fn()
     actions = { login: jest.fn() }
     store = new Vuex.Store({ actions })
 

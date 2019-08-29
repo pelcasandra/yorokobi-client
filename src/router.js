@@ -10,6 +10,7 @@ import Sign from '@/views/Sign.vue'
 import Stash from '@/views/workspace/Stash.vue'
 import Stashes from '@/views/workspace/Stashes.vue'
 import SettingsGeneral from '@/views/workspace/settings/General.vue'
+import SettingsPaymentMethod from '@/views/workspace/settings/PaymentMethod.vue'
 import SettingsPlan from '@/views/workspace/settings/Plan.vue'
 import SettingsUsage from '@/views/workspace/settings/Usage.vue'
 import Workspace from '@/views/Workspace.vue'
@@ -74,6 +75,12 @@ const router = new Router({
               path: 'plan',
               name: 'change_plan',
               component: SettingsPlan,
+              props: true
+            },
+            {
+              path: 'payment_method',
+              name: 'change_payment_method',
+              component: SettingsPaymentMethod,
               props: true
             },
             {

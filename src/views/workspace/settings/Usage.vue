@@ -35,7 +35,7 @@
             {{ workspace.retention_period }} days.
           </div>
         </div>
-        <div class="p-6 py-5">
+        <div class="p-6 py-4">
           <router-link
             :to="{ name: 'change_plan' }"
             class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-center w-40"
@@ -44,10 +44,22 @@
           >
         </div>
       </div>
-      <div class="mt-8 bg-white shadow-md rounded mb-4 p-6">
-        <div class="font-bold text-gray-700 mb-4">Payment method</div>
-        <payment-method v-if="paymentMethod" :method="paymentMethod" />
-        <div v-else class="text-gray-700 text-sm">No payment method found.</div>
+      <div class="mt-8 bg-white shadow-md rounded mb-4">
+        <div class="p-6 border-b-2 pb-5">
+          <div class="font-bold text-gray-700 mb-4">Payment method</div>
+          <payment-method-item v-if="paymentMethod" :method="paymentMethod" />
+          <div v-else class="text-gray-700 text-sm">
+            No payment method found.
+          </div>
+        </div>
+        <div class="p-6 py-4">
+          <router-link
+            :to="{ name: 'change_payment_method' }"
+            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-center"
+            tag="button"
+            >Change Payment method</router-link
+          >
+        </div>
       </div>
     </div>
     <base-spinner v-else />
@@ -58,11 +70,11 @@
 import capitalize from 'lodash/capitalize'
 import filesize from 'filesize'
 import AlertSuccess from '@/components/AlertSuccess'
-import PaymentMethod from '@/components/PaymentMethod'
+import PaymentMethodItem from '@/components/PaymentMethodItem'
 import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 
 export default {
-  components: { AlertSuccess, PaymentMethod },
+  components: { AlertSuccess, PaymentMethodItem },
   name: 'Usage',
   props: ['successMessage', 'workspace'],
   mixins: [PaymentMethodMixin],

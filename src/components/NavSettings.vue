@@ -25,8 +25,11 @@
             :to="{ name: 'workspace_subscription_usage' }"
             class="hover:bg-indigo-100 active:bg-indigo-200 focus:bg-indigo-200 py-3 px-4 block mx-4 rounded"
             :class="
-              $route.name === 'workspace_subscription_usage' ||
-              $route.name === 'change_plan'
+              [
+                'workspace_subscription_usage',
+                'change_payment_method',
+                'change_plan'
+              ].includes($route.name)
                 ? 'bg-indigo-200 hover:bg-indigo-200'
                 : ''
             "

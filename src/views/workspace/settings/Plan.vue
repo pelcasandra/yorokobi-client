@@ -83,9 +83,8 @@
 </template>
 
 <script>
-import PaymentMethod from '@/components/PaymentMethod'
+import PaymentMethod from '@/components/PaymentMethodItem'
 import PlanItem from '@/components/PlanItem'
-import StripeLoader from '@/components/StripeLoader'
 import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 import RemoteValidation from '@/mixins/RemoteValidation'
 import PlanService from '@/services/PlanService.js'
@@ -93,39 +92,23 @@ import capitalize from 'lodash/capitalize'
 import has from 'lodash/has'
 
 import { normalize, schema } from 'normalizr'
-import { Card, createToken } from 'vue-stripe-elements-plus'
 
 const plan = new schema.Entity('plans', {}, { idAttribute: 'name' })
 
 export default {
   components: {
-    Card,
     PaymentMethod,
-    PlanItem,
-    StripeLoader
+    PlanItem
   },
   props: ['workspace'],
   mixins: [PaymentMethodMixin, RemoteValidation],
   data() {
     return {
-      complete: false,
       form: {
         plan: null
       },
       newMethod: true,
-      newStripeToken: null,
       plans: {},
-      stripeOptions: {
-        style: {
-          base: {
-            color: '#4a5568',
-            fontSize: '16px',
-            fontFamily:
-              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-            fontSmoothing: 'antialiased'
-          }
-        }
-      },
       validationMessages: {
         tokenRequired: 'Please enter your credit card details.'
       }
@@ -182,16 +165,7 @@ export default {
         this.newMethod = false
       }
     },
-    setStripeToken() {
-      createToken().then(data => {
-        this.newStripeToken = data.token.id
-      })
-    },
-    setStripeTokenOnComplete(event) {
-      if (event.complete) {
-        this.setStripeToken()
-      }
-    },
+
     updateSubscription() {
       this.$v.form.$touch()
       if (this.formIsValid) {

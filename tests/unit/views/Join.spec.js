@@ -21,6 +21,7 @@ describe('Join.vue', () => {
   let actions
 
   beforeEach(() => {
+    window.scrollTo = jest.fn()
     actions = { register: jest.fn() }
     store = new Vuex.Store({ actions })
 
