@@ -45,14 +45,14 @@
         </div>
       </div>
       <div class="mt-8 bg-white shadow-md rounded mb-4">
-        <div class="p-6 border-b-2 pb-5">
+        <div class="p-6 pb-5" :class="paymentMethod ? 'border-b-2' : ''">
           <div class="font-bold text-gray-700 mb-4">Payment method</div>
           <payment-method-item v-if="paymentMethod" :method="paymentMethod" />
           <div v-else class="text-gray-700 text-sm">
             No payment method found.
           </div>
         </div>
-        <div class="p-6 py-4">
+        <div class="p-6 py-4" v-if="paymentMethod">
           <router-link
             :to="{ name: 'change_payment_method' }"
             class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-center"

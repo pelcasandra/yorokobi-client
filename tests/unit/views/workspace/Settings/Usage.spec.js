@@ -27,44 +27,60 @@ describe('Usage.vue', () => {
   }
   let wrapper
 
-  beforeEach(() => {
-    wrapper = shallowMount(Usage, {
-      propsData: { workspace },
-      computed: {
-        paymentMethod() {
-          return paymentMethod
-        },
-        paymentMethodIsLoaded() {
-          return true
+  describe('With Payment method', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(Usage, {
+        propsData: { workspace },
+        computed: {
+          paymentMethod() {
+            return paymentMethod
+          },
+          paymentMethodIsLoaded() {
+            return true
+          }
         }
-      }
+      })
+    })
+
+    it('shows available quota legend', () => {
+      expect(
+        wrapper
+          .html()
+          .replace(/\s{2,}/g, ' ')
+          .includes('Using 0 B of 10 GB')
+      ).toBe(true)
+    })
+
+    it('current plan retention period in days', () => {
+      expect(
+        wrapper
+          .text()
+          .replace(/\s{2,}/g, ' ')
+          .includes('Your backups retention period is 30 days.')
+      ).toBe(true)
+    })
+
+    it('link to change payment method', () => {
+      expect(wrapper.text().includes('Change Payment method')).toBe(true)
     })
   })
 
-  it('display quota legend', () => {
-    expect(
-      wrapper
-        .html()
-        .replace(/\s{2,}/g, ' ')
-        .includes('Using 0 B of 10 GB')
-    ).toBe(true)
-  })
+  describe('Without Payment method', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(Usage, {
+        propsData: { workspace },
+        computed: {
+          paymentMethod: jest.fn(),
+          paymentMethodIsLoaded: jest.fn().mockReturnValue(true)
+        },
+        methods: {
+          fetchPaymentMethods: jest.fn()
+        }
+      })
+    })
 
-  it('backup retention', () => {
-    expect(
-      wrapper
-        .text()
-        .replace(/\s{2,}/g, ' ')
-        .includes('Your backups retention period is 30 days.')
-    ).toBe(true)
+    it('hide link to edit payment info', () => {
+      expect(wrapper.text().includes('Change Payment method')).toBe(false)
+    })
   })
-
-  // it('display payment method brand', () => {
-  //   expect(
-  //     wrapper
-  //       .text()
-  //       .replace(/\s{2,}/g, ' ')
-  //       .includes('Visa')
-  //   ).toBe(true)
-  // })
 })
