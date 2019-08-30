@@ -7,19 +7,27 @@ import { def } from 'bdd-lazy-var/global'
 Vue.use(VueRouter)
 
 describe('Usage.vue', () => {
-  const workspace = {
-    id: '1',
-    handle: 'workspace',
-    name: 'workspace',
-    plan: 'hobbyist',
-    retention_period: 30,
-    quota_used: 0,
-    quota_total: 10737418240
-  }
+  def('canceled', () => false)
 
   let wrapper
 
   beforeEach(() => {
+    let subscription = {
+      subscribed: true,
+      canceled: $canceled
+    }
+
+    let workspace = {
+      id: '1',
+      handle: 'workspace',
+      name: 'workspace',
+      plan: 'hobbyist',
+      retention_period: 30,
+      quota_used: 0,
+      quota_total: 10737418240,
+      subscription: subscription
+    }
+
     wrapper = shallowMount(Usage, {
       propsData: { workspace },
       computed: {
@@ -34,7 +42,21 @@ describe('Usage.vue', () => {
     })
   })
 
-  describe('with payment method', () => {
+  describe('no subscription', () => {
+    def('paymentMethod', () => null)
+
+    it('hides link to change payment method', () => {
+      expect(wrapper.text().includes('Change Payment method')).toBe(false)
+    })
+
+    it('change plan link', () => {
+      expect(wrapper.find('[name="btn-change-plan"]').text()).toBe(
+        'Change Plan'
+      )
+    })
+  })
+
+  describe('subscription', () => {
     def('paymentMethod', () => ({
       id: '1',
       card: {
@@ -69,11 +91,19 @@ describe('Usage.vue', () => {
     })
   })
 
-  describe('without payment method', () => {
-    def('paymentMethod', () => null)
+  describe('canceled still valid', () => {
+    def('canceled', () => true)
 
-    it('hide link to change payment method', () => {
-      expect(wrapper.text().includes('Change Payment method')).toBe(false)
+    it('downgrade notice', () => {
+      expect(
+        wrapper.text().includes('Your plan will be downgraded to Developer')
+      ).toBe(true)
+    })
+
+    it('re-enable now link', () => {
+      expect(wrapper.find('[name="btn-change-plan"]').text()).toBe(
+        'Re-enable Now'
+      )
     })
   })
 })

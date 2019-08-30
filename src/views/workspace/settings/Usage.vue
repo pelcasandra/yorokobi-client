@@ -28,20 +28,34 @@
         <div class="p-6 border-b-2 pb-5">
           <div class="font-bold text-gray-700">Your current plan</div>
           <h2 class="text-xl font-bold my-2 text-gray-700">
-            {{ workspace.plan | capitalize }}
+            <span>{{ workspace.plan | capitalize }}</span>
+            <span v-if="canceledStillValid"></span>
           </h2>
           <div class="text-sm text-gray-700">
             Your backups retention period is
             {{ workspace.retention_period }} days.
           </div>
         </div>
+        <div
+          class="p-6 border-b-2 py-5 bg-yellow-100"
+          v-if="canceledStillValid"
+        >
+          <div class="text-sm text-gray-700">
+            Your plan will be downgraded to Developer on
+            {{ workspace.subscription.ends_at }}.
+          </div>
+        </div>
         <div class="p-6 py-4">
           <router-link
             :to="{ name: 'change_plan' }"
+            name="btn-change-plan"
             class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-center w-40"
             tag="button"
-            >Change Plan</router-link
           >
+            {{
+              workspace.subscription.canceled ? 'Re-enable Now' : 'Change Plan'
+            }}
+          </router-link>
         </div>
       </div>
       <div class="mt-8 bg-white shadow-md rounded mb-4">
@@ -79,6 +93,12 @@ export default {
   props: ['successMessage', 'workspace'],
   mixins: [PaymentMethodMixin],
   computed: {
+    canceledStillValid() {
+      return (
+        this.workspace.subscription.canceled &&
+        this.workspace.subscription.subscribed
+      )
+    },
     currentUsagePercentage() {
       return (
         parseInt(

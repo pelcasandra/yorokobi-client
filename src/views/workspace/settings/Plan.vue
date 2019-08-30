@@ -1,10 +1,18 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">Choose Plan</h1>
-    <form-wrapper :validator="$v.form" class="lg:w-2/3 w-4/5" :messages="validationMessages">
+    <form-wrapper
+      :validator="$v.form"
+      class="lg:w-2/3 w-4/5"
+      :messages="validationMessages"
+    >
       <form @submit.prevent="updateSubscription">
         <template v-if="plans && workspace">
-          <form-request-errors :errors="requestErrors" :validator="$v.form" class="mb-6" />
+          <form-request-errors
+            :errors="requestErrors"
+            :validator="$v.form"
+            class="mb-6"
+          />
           <div class="bg-white rounded shadow-md mb-6">
             <PlanItem
               v-for="plan in plans"
@@ -31,7 +39,12 @@
               </div>
               <div class="flex my-6">
                 <div v-if="paymentMethod" class="mr-4">
-                  <input type="radio" name="newMethod" :value="true" v-model="newMethod" />
+                  <input
+                    type="radio"
+                    name="newMethod"
+                    :value="true"
+                    v-model="newMethod"
+                  />
                 </div>
                 <card
                   class="stripe-card flex-grow"
@@ -58,19 +71,24 @@
               <base-button
                 :loading="state.waitingRemoteResponse"
                 :disabled="noPlanSelected"
-              >Pay with credit card</base-button>
+                >Pay with credit card</base-button
+              >
             </div>
           </stripe-loader>
         </template>
         <base-spinner v-else />
       </form>
-      <div v-if="workspace && cancelable" class="my-6">
+      <div
+        v-if="workspace && cancelable"
+        class="my-6 bg-white rounded shadow-md p-6"
+      >
         <base-button
           name="btn-cancel-subscription"
           :loading="waitingRemoteCancelationResponse"
           color="gray"
           @click.native="cancelSubscription"
-        >Cancel subscription</base-button>
+          >Cancel subscription</base-button
+        >
       </div>
     </form-wrapper>
   </section>
@@ -140,7 +158,10 @@ export default {
       return !this.$v.form.$invalid
     },
     noPlanSelected() {
-      return this.form.plan === this.workspace.plan
+      return (
+        !this.workspace.subscription.canceled &&
+        this.form.plan === this.workspace.plan
+      )
     }
   },
   mounted() {

@@ -77,6 +77,10 @@ describe('Plan.vue', () => {
   describe('canceled', () => {
     def('canceled', () => true)
 
+    it('enables submit button when same plan is selected', () => {
+      expect(wrapper.find('base-button-stub[disabled]').exists()).toBe(false)
+    })
+
     it('hides cancelation button', () => {
       expect(wrapper.find('[name="btn-cancel-subscription"]').exists()).toBe(
         false
