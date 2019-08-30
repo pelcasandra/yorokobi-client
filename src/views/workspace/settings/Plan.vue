@@ -1,18 +1,10 @@
 <template>
   <section class="flex-grow flex flex-col items-center">
     <h1 class="my-8 text-2xl font-bold text-center">Choose Plan</h1>
-    <form-wrapper
-      :validator="$v.form"
-      class="lg:w-2/3 w-4/5"
-      :messages="validationMessages"
-    >
+    <form-wrapper :validator="$v.form" class="lg:w-2/3 w-4/5" :messages="validationMessages">
       <form @submit.prevent="updateSubscription">
         <template v-if="plans && workspace">
-          <form-request-errors
-            :errors="requestErrors"
-            :validator="$v.form"
-            class="mb-6"
-          />
+          <form-request-errors :errors="requestErrors" :validator="$v.form" class="mb-6" />
           <div class="bg-white rounded shadow-md mb-6">
             <PlanItem
               v-for="plan in plans"
@@ -39,12 +31,7 @@
               </div>
               <div class="flex my-6">
                 <div v-if="paymentMethod" class="mr-4">
-                  <input
-                    type="radio"
-                    name="newMethod"
-                    :value="true"
-                    v-model="newMethod"
-                  />
+                  <input type="radio" name="newMethod" :value="true" v-model="newMethod" />
                 </div>
                 <card
                   class="stripe-card flex-grow"
@@ -71,13 +58,20 @@
               <base-button
                 :loading="state.waitingRemoteResponse"
                 :disabled="noPlanSelected"
-                >Pay with credit card</base-button
-              >
+              >Pay with credit card</base-button>
             </div>
           </stripe-loader>
         </template>
         <base-spinner v-else />
       </form>
+      <div v-if="workspace && cancelable" class="my-6">
+        <base-button
+          name="btn-cancel-subscription"
+          :loading="waitingRemoteCancelationResponse"
+          color="gray"
+          @click.native="cancelSubscription"
+        >Cancel subscription</base-button>
+      </div>
     </form-wrapper>
   </section>
 </template>
@@ -111,7 +105,8 @@ export default {
       plans: {},
       validationMessages: {
         tokenRequired: 'Please enter your credit card details.'
-      }
+      },
+      waitingRemoteCancelationResponse: false
     }
   },
   watch: {
@@ -125,6 +120,12 @@ export default {
     }
   },
   computed: {
+    cancelable() {
+      return (
+        this.workspace.subscription.subscribed &&
+        !this.workspace.subscription.canceled
+      )
+    },
     currentMethodToken() {
       return this.newMethod ? this.newStripeToken : this.paymentMethod.id
     },
@@ -146,6 +147,30 @@ export default {
     this.getPlans()
   },
   methods: {
+    cancelSubscription() {
+      if (
+        confirm('Are you sure you want to cancel your current subscription?')
+      ) {
+        this.waitingRemoteCancelationResponse = true
+        return this.$store
+          .dispatch('cancelWorkspaceSubscription', this.workspace.id)
+          .then(() => {
+            this.$router.push({
+              name: 'workspace_subscription_usage',
+              params: {
+                handle: this.workspace.handle,
+                successMessage: 'You successfully cancelled your subscription.'
+              }
+            })
+          })
+          .catch(error => {
+            this.waitingRemoteCancelationResponse = false
+            if (has(error, 'response.data.errors')) {
+              this.requestErrors = error.response.data.errors
+            }
+          })
+      }
+    },
     getPlans() {
       PlanService.getPlans().then(({ data }) => {
         const plans = normalize(data, { plans: [plan] })
@@ -165,7 +190,6 @@ export default {
         this.newMethod = false
       }
     },
-
     updateSubscription() {
       this.$v.form.$touch()
       if (this.formIsValid) {

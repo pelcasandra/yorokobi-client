@@ -5,8 +5,8 @@
     class="text-white font-bold px-4 py-2 rounded content-center inline-flex justify-center transition-max-width"
     :class="
       loading || disabled
-        ? 'bg-indigo-400 cursor-auto'
-        : 'bg-indigo-500 hover:bg-indigo-700 focus:shadow-outline focus:outline-none '
+        ? `bg-${color}-400 cursor-auto`
+        : `bg-${color}-500 hover:bg-${color}-700 focus:shadow-outline focus:outline-none`
     "
     :disabled="disabled || loading"
   >
@@ -30,6 +30,7 @@ export default {
   name: 'BaseButton',
   mixins: [smoothReflow],
   props: {
+    color: { type: String, default: 'indigo' },
     disabled: { type: Boolean, default: false },
     loadingText: { type: String, default: 'Processing...' },
     loading: { type: Boolean, default: false }

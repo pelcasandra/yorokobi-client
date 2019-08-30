@@ -2,7 +2,6 @@ import { shallowMount } from '@vue/test-utils'
 import Vue from 'vue'
 import Usage from '@/views/workspace/Settings/Usage'
 import VueRouter from 'vue-router'
-
 import { def } from 'bdd-lazy-var/global'
 
 Vue.use(VueRouter)

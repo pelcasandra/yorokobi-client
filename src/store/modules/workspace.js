@@ -53,6 +53,13 @@ export default {
         commit('SET_WORKSPACE', response.data)
       })
     },
+    cancelWorkspaceSubscription({ commit }, workspace_id) {
+      return SubscriptionService.deleteSubscription(workspace_id).then(
+        response => {
+          commit('SET_WORKSPACE', response.data)
+        }
+      )
+    },
     updateWorkspaceSubscription({ commit }, workspace) {
       return SubscriptionService.postSubscription(workspace).then(response => {
         commit('SET_WORKSPACE', response.data)
