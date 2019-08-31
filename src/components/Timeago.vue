@@ -2,22 +2,12 @@
   <div class="text-gray-600 text-sm mt-1">
     <slot></slot>
     <span>&nbsp;</span>
-    <timeago
-      :datetime="toDate(datetime)"
-      :auto-update="60"
-      locale="en"
-    ></timeago
-    >.
+    <timeago :datetime="datetime" :auto-update="60" locale="en"></timeago>.
   </div>
 </template>
 
 <script>
 export default {
-  props: ['date', 'datetime'],
-  methods: {
-    toDate(datetime) {
-      return datetime * 1000
-    }
-  }
+  props: ['date', 'datetime']
 }
 </script>
