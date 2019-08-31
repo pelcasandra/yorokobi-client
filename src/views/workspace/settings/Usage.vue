@@ -42,7 +42,7 @@
         >
           <div class="text-sm text-gray-700">
             Your plan will be downgraded to Developer on
-            {{ workspace.subscription.ends_at }}.
+            {{ workspace.subscription.ends_at | moment('LL') }}.
           </div>
         </div>
         <div class="p-6 py-4">

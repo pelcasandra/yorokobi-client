@@ -25,6 +25,7 @@
     "vue-error-page": "^1.1.7",
     "vue-lodash": "^2.0.2",
     "vue-meta": "^2.2.1",
+    "vue-moment": "^4.0.0",
     "vue-router": "^3.0.3",
     "vue-scrollto": "^2.15.0",
     "vue-smooth-reflow": "^0.1.12",

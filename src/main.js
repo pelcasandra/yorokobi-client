@@ -17,6 +17,8 @@ import '@/assets/css/tailwind.css'
 
 window.eventBus = new Vue()
 
+Vue.use(require('vue-moment'))
+
 Vue.use(ErrorPage)
 
 Vue.use(VueTimeago, {
