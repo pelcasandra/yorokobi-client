@@ -1,6 +1,7 @@
+import Vue from 'vue'
+import filter from 'lodash/filter'
 import { normalize, schema } from 'normalizr'
 import StashService from '@/services/StashService'
-import filter from 'lodash/filter'
 
 const stash = new schema.Entity('stashes')
 
@@ -11,6 +12,10 @@ export default {
   },
 
   mutations: {
+    SET_STASH(state, stash) {
+      Vue.set(state.stashes, stash.id, stash)
+      state.isLoading = false
+    },
     SET_STASHES(state, data) {
       state.stashes = data.entities.stashes
       state.isLoading = false
@@ -18,6 +23,11 @@ export default {
   },
 
   actions: {
+    fetchStash({ commit }, id) {
+      return StashService.getStash(id).then(response => {
+        commit('SET_STASH', response.data)
+      })
+    },
     fetchStashes({ commit }, workspace_id) {
       return StashService.getStashes(workspace_id).then(({ data }) => {
         const stashes = normalize(data, {
@@ -30,8 +40,11 @@ export default {
   },
 
   getters: {
+    getStash: state => id => {
+      return state.stashes[id]
+    },
     getStashes: state => workspace_id => {
-      return filter(state.stashes, { workspace_id: workspace_id })
+      return filter(state.stashes, { workspace: workspace_id })
     }
   }
 }

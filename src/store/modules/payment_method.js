@@ -7,7 +7,6 @@ const payment_method = new schema.Entity('payment_methods')
 
 export default {
   state: {
-    alreadyFetched: false,
     isLoading: true,
     payment_methods: {}
   },
@@ -19,7 +18,6 @@ export default {
     },
     SET_PAYMENT_METHODS(state, data) {
       state.payment_methods = data.entities.payment_methods
-      state.alreadyFetched = true
       state.isLoading = false
     }
   },
@@ -47,7 +45,7 @@ export default {
       return state.payment_methods[id]
     },
     getPaymentMethodByWorkspaceId: state => workspace_id => {
-      return find(state.payment_methods, { workspace_id: workspace_id })
+      return find(state.payment_methods, { workspace: workspace_id })
     }
   }
 }

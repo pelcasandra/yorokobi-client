@@ -4,8 +4,8 @@
     :to="{ name: 'invoice', params: { id: invoice.id } }"
   >
     <div class="mr-auto">
-      {{ invoice.period_start_at | moment('LL') }} to
-      {{ invoice.period_end_at | moment('LL') }}
+      {{ invoice.start | moment('LL') }} to
+      {{ invoice.end | moment('LL') }}
     </div>
     <div class="align-right">{{ invoice.amount | money }}</div>
   </router-link>

@@ -12,10 +12,10 @@ export default {
       return this.$store.getters.getBackupsByPath(this.path)[0]
     },
     path() {
-      return { workspace: this.handle, stash: this.id }
+      return this.handle + '/' + this.id
     }
   },
-  created() {
+  mounted() {
     this.fetchBackups()
   },
   methods: {

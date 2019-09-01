@@ -29,7 +29,7 @@
           <div class="font-bold text-gray-700">Your current plan</div>
           <h2 class="text-xl font-bold my-2 text-gray-700">
             <span>{{ workspace.plan | capitalize }}</span>
-            <span v-if="canceledStillValid"></span>
+            <span v-if="canceledStillActive"></span>
           </h2>
           <div class="text-sm text-gray-700">
             Your backups retention period is
@@ -38,7 +38,7 @@
         </div>
         <div
           class="p-6 border-b-2 py-5 bg-yellow-100"
-          v-if="canceledStillValid"
+          v-if="canceledStillActive"
         >
           <div class="text-sm text-gray-700">
             Your plan will be downgraded to Developer on
@@ -90,13 +90,13 @@ import PaymentMethodMixin from '@/mixins/PaymentMethod.js'
 export default {
   components: { AlertSuccess, PaymentMethodItem },
   name: 'Usage',
-  props: ['successMessage', 'workspace'],
+  props: ['successMessage'],
   mixins: [PaymentMethodMixin],
   computed: {
-    canceledStillValid() {
+    canceledStillActive() {
       return (
         this.workspace.subscription.canceled &&
-        this.workspace.subscription.subscribed
+        this.workspace.subscription.active
       )
     },
     currentUsagePercentage() {

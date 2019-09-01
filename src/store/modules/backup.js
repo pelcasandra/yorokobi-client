@@ -1,7 +1,7 @@
 import Vue from 'vue'
+import filter from 'lodash/filter'
 import { normalize, schema } from 'normalizr'
 import BackupService from '@/services/BackupService'
-import filter from 'lodash/filter'
 
 const backup = new schema.Entity('backups')
 
@@ -29,17 +29,15 @@ export default {
       })
     },
     fetchBackupsByPath({ commit }, path) {
-      return BackupService.getBackupsByPath(path.workspace, path.stash).then(
-        ({ data }) => {
-          const backups = normalize(data, {
-            backups: [backup]
-          })
-          commit('SET_BACKUPS', backups)
-          if (!data.backups.length) {
-            throw { code: 404 }
-          }
+      return BackupService.getBackupsByPath(path).then(({ data }) => {
+        const backups = normalize(data, {
+          backups: [backup]
+        })
+        commit('SET_BACKUPS', backups)
+        if (!data.backups.length) {
+          throw { code: 404 }
         }
-      )
+      })
     }
   },
 
@@ -49,8 +47,7 @@ export default {
     },
     getBackupsByPath: state => path => {
       return filter(state.backups, {
-        workspace: path.workspace,
-        stash: path.stash
+        path: path
       })
     }
   }

@@ -1,31 +1,30 @@
 <template>
   <div class="w-full">
-    <Header v-if="backup">
+    <Header v-if="backup && stash">
       Backups
       <span class="text-gray-500">/</span>
-      {{ backup.stash }}
+      {{ stash.handle }}
       <span class="text-gray-500">/</span>
       #{{ backup.number }}
     </Header>
-    <section class="flex-grow m-10 flex flex-col items-center">
+    <section class="flex-grow m-10 flex flex-col items-center" v-if="ready">
       <div
-        v-if="backupReady && agentReady"
         class="bg-white lg:w-1/2 w-4/5 rounded overflow-hidden mb-8 shadow-md border-black-700"
       >
         <div class="border-b-2 p-5">
-          <h1 class="text-xl font-bold">{{ backup.stash }}</h1>
+          <h1 class="text-xl font-bold">{{ stash.handle }}</h1>
         </div>
         <div class="border-b-2 p-5" v-if="complete">
           This backup completed successfuly.
-          <Timeago :datetime="backup.completed_at">Completed</Timeago>
+          <Timeago :datetime="backup.completed">Completed</Timeago>
         </div>
         <div class="border-b-2 p-5" v-else-if="canceled">
           This backup was cancelled.
-          <Timeago :datetime="backup.canceled_at">Canceled</Timeago>
+          <Timeago :datetime="backup.canceled">Canceled</Timeago>
         </div>
         <div class="border-b-2 p-5" v-else>
           Backup process initiated.
-          <Timeago :datetime="backup.created_at">Initiated</Timeago>
+          <Timeago :datetime="backup.created">Initiated</Timeago>
         </div>
 
         <div class="border-b-2 p-5">
@@ -37,9 +36,7 @@
           </div>
         </div>
       </div>
-      <base-spinner v-else />
       <div
-        v-if="backupReady && agentReady"
         class="bg-white lg:w-1/2 w-4/5 rounded overflow-hidden mb-8 shadow-md"
       >
         <div class="border-b-2 border-black-700 p-5">
@@ -61,14 +58,14 @@
         </div>
       </div>
     </section>
+    <base-spinner v-else class="mt-6" />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Header from '@/components/Header'
-import NotFound from '@/views/errors/NotFound'
 import Timeago from '@/components/Timeago'
+import NotFound from '@/views/errors/NotFound'
 
 export default {
   components: { Header, Timeago },
@@ -78,7 +75,7 @@ export default {
       title: this.backup ? this.title : 'Loading'
     }
   },
-  created() {
+  mounted() {
     this.fetchBackup()
   },
   computed: {
@@ -88,33 +85,37 @@ export default {
     backup() {
       return this.$store.getters.getBackup(this.id)
     },
-    canceled: backup => backup.state === 'canceled',
-    complete: backup => backup.state === 'completed',
-    title() {
-      return `Backup #${this.backup.number} - ${this.backup.workspace}/${
-        this.backup.stash
-      }`
+    stash() {
+      return this.$store.getters.getStash(this.backup.stash)
     },
-    ...mapState({
-      backupReady: state => !state.backup.isLoading,
-      agentReady: state => !state.agent.isLoading
-    })
+    ready() {
+      return this.backup && this.agent && this.stash
+    },
+    title() {
+      return `Backup #${this.backup.number} - ${this.backup.path}`
+    },
+    canceled: backup => backup.state === 'canceled',
+    complete: backup => backup.state === 'completed'
   },
   methods: {
-    downloadLink() {
-      window.location.href = this.backup.download_link
-    },
     fetchBackup() {
       this.$store
         .dispatch('fetchBackup', this.id)
         .then(() => {
           this.fetchAgent()
+          this.fetchStash()
           this.$meta().refresh()
         })
         .catch(() => this.$_error(NotFound))
     },
     fetchAgent() {
       this.$store.dispatch('fetchAgent', this.backup.agent)
+    },
+    fetchStash() {
+      this.$store.dispatch('fetchStash', this.backup.stash)
+    },
+    downloadLink() {
+      window.location.href = this.backup.download_link
     }
   }
 }

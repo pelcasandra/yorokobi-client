@@ -1,14 +1,13 @@
 import Vue from 'vue'
+import find from 'lodash/find'
+import { normalize, schema } from 'normalizr'
 import SubscriptionService from '@/services/SubscriptionService'
 import WorkspaceService from '@/services/WorkspaceService'
-import { normalize, schema } from 'normalizr'
-import find from 'lodash/find'
 
 const workspace = new schema.Entity('workspaces')
 
 export default {
   state: {
-    alreadyFetched: false,
     isLoading: true,
     workspaces: {}
   },
@@ -20,7 +19,6 @@ export default {
     },
     SET_WORKSPACES(state, data) {
       state.workspaces = data.entities.workspaces
-      state.alreadyFetched = true
       state.isLoading = false
     }
   },

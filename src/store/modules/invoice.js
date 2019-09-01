@@ -1,7 +1,7 @@
 import Vue from 'vue'
+import filter from 'lodash/filter'
 import { normalize, schema } from 'normalizr'
 import InvoiceService from '@/services/InvoiceService'
-import filter from 'lodash/filter'
 
 const invoice = new schema.Entity('invoices')
 
@@ -43,7 +43,7 @@ export default {
       return state.invoices[id]
     },
     getInvoices: state => workspace_id => {
-      return filter(state.invoices, { workspace_id: workspace_id })
+      return filter(state.invoices, { workspace: workspace_id })
     }
   }
 }

@@ -2,6 +2,7 @@ import StripeLoader from '@/components/StripeLoader'
 import { Card, createToken } from 'vue-stripe-elements-plus'
 
 export default {
+  props: ['workspace'],
   components: { Card, StripeLoader },
   computed: {
     paymentMethod() {
@@ -30,17 +31,12 @@ export default {
       }
     }
   },
-  watch: {
-    workspace: {
-      immediate: true,
-      handler: 'fetchPaymentMethods'
-    }
+  mounted() {
+    this.fetchPaymentMethods()
   },
   methods: {
     fetchPaymentMethods() {
-      if (this.workspace && !this.paymentMethod) {
-        this.$store.dispatch('fetchPaymentMethods')
-      }
+      this.$store.dispatch('fetchPaymentMethods')
     },
     setStripeToken() {
       createToken().then(data => {

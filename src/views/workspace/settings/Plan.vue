@@ -112,7 +112,6 @@ export default {
     PaymentMethod,
     PlanItem
   },
-  props: ['workspace'],
   mixins: [PaymentMethodMixin, RemoteValidation],
   data() {
     return {
@@ -132,9 +131,6 @@ export default {
       immediate: true,
       handler: 'selectPreviouslyUsedMethod'
     }
-  },
-  created() {
-    this.selectExistingPlan()
   },
   computed: {
     cancelable() {
@@ -163,34 +159,13 @@ export default {
       )
     }
   },
+  created() {
+    this.selectExistingPlan()
+  },
   mounted() {
     this.getPlans()
   },
   methods: {
-    cancelSubscription() {
-      if (
-        confirm('Are you sure you want to cancel your current subscription?')
-      ) {
-        this.waitingRemoteCancelationResponse = true
-        return this.$store
-          .dispatch('cancelWorkspaceSubscription', this.workspace.id)
-          .then(() => {
-            this.$router.push({
-              name: 'workspace_subscription_usage',
-              params: {
-                handle: this.workspace.handle,
-                successMessage: 'You successfully cancelled your subscription.'
-              }
-            })
-          })
-          .catch(error => {
-            this.waitingRemoteCancelationResponse = false
-            if (has(error, 'response.data.errors')) {
-              this.requestErrors = error.response.data.errors
-            }
-          })
-      }
-    },
     getPlans() {
       PlanService.getPlans().then(({ data }) => {
         const plans = normalize(data, { plans: [plan] })
@@ -230,6 +205,30 @@ export default {
           })
           .catch(error => {
             this.state.waitingRemoteResponse = false
+            if (has(error, 'response.data.errors')) {
+              this.requestErrors = error.response.data.errors
+            }
+          })
+      }
+    },
+    cancelSubscription() {
+      if (
+        confirm('Are you sure you want to cancel your current subscription?')
+      ) {
+        this.waitingRemoteCancelationResponse = true
+        return this.$store
+          .dispatch('cancelWorkspaceSubscription', this.workspace.id)
+          .then(() => {
+            this.$router.push({
+              name: 'workspace_subscription_usage',
+              params: {
+                handle: this.workspace.handle,
+                successMessage: 'You successfully cancelled your subscription.'
+              }
+            })
+          })
+          .catch(error => {
+            this.waitingRemoteCancelationResponse = false
             if (has(error, 'response.data.errors')) {
               this.requestErrors = error.response.data.errors
             }

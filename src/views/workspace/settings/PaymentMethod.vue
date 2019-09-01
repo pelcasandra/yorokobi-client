@@ -64,7 +64,6 @@ import RemoteValidation from '@/mixins/RemoteValidation'
 import has from 'lodash/has'
 
 export default {
-  props: ['workspace'],
   components: {
     PaymentMethodItem
   },

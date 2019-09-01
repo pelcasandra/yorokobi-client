@@ -3,11 +3,12 @@
     <h1 class="mt-5 mb-8 text-2xl font-medium text-center">
       Everything is up to date.
     </h1>
-    <template v-if="fetchingComplete">
+    <template v-if="stashes">
       <div class="rounded overflow-hidden shadow-md lg:w-1/2 w-4/5">
         <StashItem
           v-for="stash in stashes"
           :key="stash.id"
+          :path="stash.path"
           :stash="stash"
         ></StashItem>
       </div>
@@ -32,13 +33,10 @@ export default {
       title: this.workspace.name
     }
   },
-  created() {
+  mounted() {
     this.fetchStashes()
   },
   computed: {
-    fetchingComplete() {
-      return !this.$store.state.stash.isLoading
-    },
     stashes() {
       return this.$store.getters.getStashes(this.workspace.id)
     }

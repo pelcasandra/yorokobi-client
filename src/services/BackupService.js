@@ -4,8 +4,8 @@ export default {
   getBackups(workspace_id) {
     return Vue.axios.get('backups/?workspace_id=' + workspace_id)
   },
-  getBackupsByPath(workspace_id, stash_id) {
-    return Vue.axios.get('backups/?path=' + workspace_id + '/' + stash_id)
+  getBackupsByPath(path) {
+    return Vue.axios.get('backups/?path=' + path)
   },
   getBackup(id) {
     return Vue.axios.get('backups/' + id)

@@ -24,11 +24,8 @@ import InvoiceItem from '@/components/InvoiceItem'
 export default {
   props: ['workspace'],
   components: { InvoiceItem },
-  watch: {
-    workspace: {
-      immediate: true,
-      handler: 'fetchInvoices'
-    }
+  mounted() {
+    this.fetchInvoices()
   },
   computed: {
     invoices() {

@@ -16,7 +16,6 @@
           ></WorkspaceItem>
         </div>
       </template>
-
       <router-link
         :to="{ name: 'new_workspace' }"
         class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-64 mt-8 text-center"
@@ -35,11 +34,10 @@ export default {
   components: { WorkspaceItem },
   mixins: [FlexCenter],
   metaInfo: {
-    title: 'Your Workspaces',
-    titleTemplate: null
+    title: 'Your Workspaces'
   },
   mounted() {
-    if (!this.$store.state.workspace.alreadyFetched) {
+    if (!this.workspace.workspaces.length) {
       this.$store.dispatch('fetchWorkspaces').catch(error => {
         if (error.response.status === 404) {
           this.$router.push('/')

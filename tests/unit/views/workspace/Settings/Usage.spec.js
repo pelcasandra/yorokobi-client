@@ -14,7 +14,7 @@ describe('Usage.vue', () => {
 
   beforeEach(() => {
     let subscription = {
-      subscribed: true,
+      active: true,
       canceled: $canceled,
       ends_at: '2019-01-18T03:57:22.272Z'
     }
