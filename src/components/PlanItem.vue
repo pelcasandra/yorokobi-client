@@ -28,9 +28,11 @@
 <script>
 import capitalize from 'lodash/capitalize'
 import filesize from 'filesize'
+import Money from '@/mixins/Money'
 
 export default {
   name: 'PlanItem',
+  mixins: [Money],
   props: {
     checked: Boolean,
     plan: {
@@ -45,14 +47,7 @@ export default {
   },
   filters: {
     capitalize: value => capitalize(value),
-    filesize: value => filesize(value),
-    money: value => {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0
-      }).format(value / 100)
-    }
+    filesize: value => filesize(value)
   }
 }
 </script>

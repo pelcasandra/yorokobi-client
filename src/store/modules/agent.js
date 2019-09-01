@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import AgentService from '@/services/AgentService'
 
 export default {
@@ -8,7 +9,7 @@ export default {
 
   mutations: {
     SET_AGENT(state, agent) {
-      state.agents.push(agent)
+      Vue.set(state.agents, agent.id, agent)
       state.isLoading = false
     }
   },
@@ -22,8 +23,8 @@ export default {
   },
 
   getters: {
-    getAgentById: state => id => {
-      return state.agents.find(agent => agent.id === id)
+    getAgent: state => id => {
+      return state.agents[id]
     }
   }
 }

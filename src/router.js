@@ -10,6 +10,8 @@ import Sign from '@/views/Sign.vue'
 import Stash from '@/views/workspace/Stash.vue'
 import Stashes from '@/views/workspace/Stashes.vue'
 import SettingsGeneral from '@/views/workspace/settings/General.vue'
+import SettingsInvoice from '@/views/workspace/settings/Invoice.vue'
+import SettingsInvoices from '@/views/workspace/settings/Invoices.vue'
 import SettingsPaymentMethod from '@/views/workspace/settings/PaymentMethod.vue'
 import SettingsPlan from '@/views/workspace/settings/Plan.vue'
 import SettingsUsage from '@/views/workspace/settings/Usage.vue'
@@ -65,6 +67,18 @@ const router = new Router({
           component: Settings,
           props: true,
           children: [
+            {
+              path: 'invoices',
+              name: 'invoices',
+              component: SettingsInvoices,
+              props: true
+            },
+            {
+              path: 'invoices/:id',
+              name: 'invoice',
+              component: SettingsInvoice,
+              props: true
+            },
             {
               path: 'usage',
               name: 'workspace_subscription_usage',

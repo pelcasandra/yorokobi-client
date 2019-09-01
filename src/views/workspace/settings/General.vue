@@ -50,29 +50,23 @@
 </template>
 
 <script>
-import Workspace from '@/mixins/Workspace.js'
 import WorkspaceForm from '@/mixins/WorkspaceForm.js'
+import clone from 'lodash/clone'
 
 export default {
-  props: ['handle'],
-  mixins: [Workspace, WorkspaceForm],
+  props: ['handle', 'workspace'],
+  mixins: [WorkspaceForm],
   metaInfo() {
     return {
-      title: this.workspace ? `${this.workspace.name} Settings` : 'Settings',
-      titleTemplate: null
+      title: this.workspace.name
     }
   },
-  watch: {
-    workspace: {
-      immediate: true,
-      handler: 'cloneWorkspace'
-    }
+  created() {
+    this.cloneWorkspace()
   },
   methods: {
     cloneWorkspace() {
-      if (this.workspace) {
-        this.form = this._.clone(this.workspace)
-      }
+      this.form = clone(this.workspace)
     },
     updateWorkspace() {
       return this.dispatchWorkspace('updateWorkspace')

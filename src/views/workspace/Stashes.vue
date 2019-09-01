@@ -3,7 +3,7 @@
     <h1 class="mt-5 mb-8 text-2xl font-medium text-center">
       Everything is up to date.
     </h1>
-    <template v-if="!isLoading">
+    <template v-if="fetchingComplete">
       <div class="rounded overflow-hidden shadow-md lg:w-1/2 w-4/5">
         <StashItem
           v-for="stash in stashes"
@@ -22,34 +22,31 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import StashItem from '@/components/StashItem'
-import Workspace from '@/mixins/Workspace'
 
 export default {
   components: { StashItem },
-  props: ['handle'],
-  mixins: [Workspace],
+  props: ['workspace'],
   metaInfo() {
     return {
-      title: this.workspace ? `${this.workspace.name}` : 'Stashes',
-      titleTemplate: null
+      title: this.workspace.name
     }
   },
   created() {
-    if (!this.$store.getters.getStashesByWorkspaceHandle(this.handle).length) {
-      this.$store.dispatch('fetchStashesByWorkspaceHandle', this.handle)
-    }
+    this.fetchStashes()
   },
   computed: {
-    ...mapState({
-      stashes(state) {
-        return state.stash.stashes.filter(
-          stash => stash.workspace === this.handle
-        )
-      },
-      isLoading: state => state.stash.isLoading
-    })
+    fetchingComplete() {
+      return !this.$store.state.stash.isLoading
+    },
+    stashes() {
+      return this.$store.getters.getStashes(this.workspace.id)
+    }
+  },
+  methods: {
+    fetchStashes() {
+      this.$store.dispatch('fetchStashes', this.workspace.id)
+    }
   }
 }
 </script>

@@ -1,4 +1,8 @@
+import { normalize, schema } from 'normalizr'
 import StashService from '@/services/StashService'
+import filter from 'lodash/filter'
+
+const stash = new schema.Entity('stashes')
 
 export default {
   state: {
@@ -7,30 +11,27 @@ export default {
   },
 
   mutations: {
-    SET_STASHES(state, stashes) {
-      state.stashes = stashes.stashes
+    SET_STASHES(state, data) {
+      state.stashes = data.entities.stashes
       state.isLoading = false
     }
   },
 
   actions: {
     fetchStashes({ commit }, workspace_id) {
-      StashService.getStashes(workspace_id).then(response => {
-        commit('SET_STASHES', response.data)
+      return StashService.getStashes(workspace_id).then(({ data }) => {
+        const stashes = normalize(data, {
+          stashes: [stash]
+        })
+
+        commit('SET_STASHES', stashes)
       })
-    },
-    fetchStashesByWorkspaceHandle({ commit }, workspace_handle) {
-      return StashService.getStashesByWorkspaceHandle(workspace_handle).then(
-        response => {
-          commit('SET_STASHES', response.data)
-        }
-      )
     }
   },
 
   getters: {
-    getStashesByWorkspaceHandle: state => workspace => {
-      return state.stashes.filter(stash => stash.workspace === workspace)
+    getStashes: state => workspace_id => {
+      return filter(state.stashes, { workspace_id: workspace_id })
     }
   }
 }

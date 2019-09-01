@@ -7,23 +7,31 @@ import NotFound from '@/views/errors/NotFound'
 
 export default {
   props: ['handle', 'id'],
-  created() {
-    let path = {
-      workspace: this.handle,
-      stash: this.id
+  computed: {
+    lastBackup() {
+      return this.$store.getters.getBackupsByPath(this.path)[0]
+    },
+    path() {
+      return { workspace: this.handle, stash: this.id }
     }
-    this.$store
-      .dispatch('fetchBackupsByPath', path)
-      .then(() => {
-        this.$router.push({
-          name: 'backup',
-          params: {
-            handle: this.handle,
-            id: this.$store.getters.getBackupsByPath(path)[0].id
-          }
+  },
+  created() {
+    this.fetchBackups()
+  },
+  methods: {
+    fetchBackups() {
+      this.$store
+        .dispatch('fetchBackupsByPath', this.path)
+        .then(() => {
+          this.$router.push({
+            name: 'backup',
+            params: {
+              id: this.lastBackup.id
+            }
+          })
         })
-      })
-      .catch(() => this.$_error(NotFound))
+        .catch(() => this.$_error(NotFound))
+    }
   }
 }
 </script>

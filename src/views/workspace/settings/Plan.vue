@@ -128,14 +128,13 @@ export default {
     }
   },
   watch: {
-    workspace: {
-      immediate: true,
-      handler: 'selectExistingPlan'
-    },
     paymentMethodIsLoaded: {
       immediate: true,
       handler: 'selectPreviouslyUsedMethod'
     }
+  },
+  created() {
+    this.selectExistingPlan()
   },
   computed: {
     cancelable() {
@@ -199,9 +198,7 @@ export default {
       })
     },
     selectExistingPlan() {
-      if (this.workspace) {
-        this.form.plan = this.workspace.plan
-      }
+      this.form.plan = this.workspace.plan
     },
     selectPlan(value) {
       this.form.plan = value
