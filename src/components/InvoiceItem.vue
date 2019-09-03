@@ -7,7 +7,7 @@
       {{ invoice.start | moment('LL') }} to
       {{ invoice.end | moment('LL') }}
     </div>
-    <div class="align-right">{{ invoice.amount | money }}</div>
+    <div class="text-right">{{ invoice.amount | money }}</div>
   </router-link>
 </template>
 

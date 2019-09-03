@@ -6,11 +6,11 @@
       class="rounded shadow-md lg:w-2/3 w-4/5 bg-white text-gray-800"
     >
       <template v-if="invoices.length">
-        <InvoiceItem
+        <invoice-item
           v-for="invoice in invoices"
           :key="invoice.id"
           :invoice="invoice"
-        ></InvoiceItem>
+        ></invoice-item>
       </template>
       <div v-else class="p-6">You don't have any invoices yet.</div>
     </div>
