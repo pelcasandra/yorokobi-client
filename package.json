@@ -20,7 +20,7 @@
     "filesize": "^4.1.2",
     "normalizr": "^3.4.0",
     "tailwindcss-transitions": "^2.0.1",
-    "vue": "^2.6.10",
+    "vue": "^3.0.0",
     "vue-axios": "^2.1.4",
     "vue-error-page": "^1.1.7",
     "vue-lodash": "^2.0.2",
